@@ -76,12 +76,14 @@ public class EndlessTerrain : MonoBehaviour
         int previousLODIndex = -1;
 
         public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material){
+            
             this.detailLevels = detailLevels;
             position = coord * size;
             bounds = new Bounds(position,Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
 
             meshObject = new GameObject("Terrain Chunk");
+            meshObject.layer = 6;
             meshRenderer = meshObject.AddComponent<MeshRenderer>();
             meshFilter = meshObject.AddComponent<MeshFilter>();
             meshCollider = meshObject.AddComponent<MeshCollider>();

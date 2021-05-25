@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
+
     public Transform cam;
+     Vector3 direction;
 
     public float speed = 6f;
     public float turnSmoothTime = 1f;
@@ -16,19 +18,27 @@ public class PlayerMovement : MonoBehaviour
 
     //public HealthBar healthBar;
 
-    //void Awake() => _animator = GetComponent<Animator>();
-    /*void Start()
+    void Awake() => _animator = GetComponent<Animator>();
+    
+    void Start()
     {
         gameObject.tag = "Player";
-        currentHealth=maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
-    }*/
+        //currentHealth=maxHealth;
+        //healthBar.SetMaxHealth(maxHealth);
+    }
 
     void Update(){
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
-        //float playerYPos = transform.position.y;
-        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+
+        direction = new Vector3(horizontal, 0f, vertical).normalized;
+        
+        //Animation
+        float velocityZ = Vector3.Dot(direction, transform.forward);
+        float velocityX = Vector3.Dot(direction, transform.right);
+
+        _animator.SetFloat("VelocityZ", velocityZ, 0.1f, Time.deltaTime);
+        _animator.SetFloat("VelocityX", velocityX, 0.1f, Time.deltaTime);
 
         if(direction.magnitude >= 0.1f){
 
@@ -39,14 +49,12 @@ public class PlayerMovement : MonoBehaviour
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f)* Vector3.forward;
             controller.Move(moveDir.normalized*speed*Time.deltaTime);
         }
-
-        /*
-        //Animation
-        float velocityZ = Vector3.Dot(direction, transform.forward);
-        float velocityX = Vector3.Dot(direction, transform.right);
-
-        _animator.SetFloat("VelocityZ", velocityZ, 0.1f, Time.deltaTime);
-        _animator.SetFloat("VelocityX", velocityX, 0.1f, Time.deltaTime);
-        */
+        
     }
+
+    void FixedUpdate(){
+
+        
+    }
+
 }
