@@ -8,6 +8,7 @@ public class UpdatableData : ScriptableObject
     //public bool autoUpdate;
 
     void OnEnable(){
+        UnityEditor.EditorApplication.update -= NotifyOfUpdatedValues;
         UnityEditor.EditorApplication.update += NotifyOfUpdatedValues;
     }
 
