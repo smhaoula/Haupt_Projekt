@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EndlessTerrain : MonoBehaviour
 {
-    
+    public GameObject tree;
     const float viewerMoveThresholdForChunkUpdate = 25f;
     const float squareViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
     public static float maxViewDst;
@@ -24,6 +24,7 @@ public class EndlessTerrain : MonoBehaviour
         chunkSize = MapGenerator.mapChunkSize-1;
         chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst/chunkSize);
         UpdateVisibleChunks();
+        
     }
     void Update(){
         viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / mapGenerator.terrainData.uniformScale;
@@ -31,7 +32,15 @@ public class EndlessTerrain : MonoBehaviour
             viewerPositionOld = viewerPosition;
             UpdateVisibleChunks();
         }
-        
+    }
+
+    void LateUpdate(){
+        foreach(var value in terrainChunkDictionary.Values){
+            if(!value.generatedNature){
+                value.SpawnTrees();
+                value.generatedNature = true;
+            }
+        }
     }
     void UpdateVisibleChunks(){
 
@@ -52,17 +61,19 @@ public class EndlessTerrain : MonoBehaviour
                     
                 }
                 else{
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, tree));
                 }
             }
         }
-
     }
 
     public class TerrainChunk{
+        public bool generatedNature;
+        GameObject _tree;
+        TextureData textureData = mapGenerator.textureData;
         GameObject meshObject;
-        Vector2 position;
-        Bounds bounds;
+        public Vector2 position;
+        public Bounds bounds;
 
         MapData mapData;
 
@@ -74,11 +85,14 @@ public class EndlessTerrain : MonoBehaviour
         LODMesh collisionLODMesh;
         bool mapDataReceived;
         int previousLODIndex = -1;
+        int terrainSize;
 
-        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material){
-            
+        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree){
+            _tree = tree;
+            generatedNature = false;
             this.detailLevels = detailLevels;
             position = coord * size;
+            terrainSize = size;
             bounds = new Bounds(position,Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
 
@@ -101,9 +115,40 @@ public class EndlessTerrain : MonoBehaviour
                     collisionLODMesh = lODMeshes[i];
                 }
             }
-
             mapGenerator.RequestMapData(position, OnMapDataReceived);
         }
+
+        public void SpawnTrees(){
+            float minTreeHeight = textureData.layers[2].startHeight * mapGenerator.noiseData.noiseScale;
+            float maxTreeHeight = textureData.layers[4].startHeight * mapGenerator.noiseData.noiseScale;
+            int treeCount = 5;
+            int layerMask = LayerMask.GetMask("Terrain");
+            for(int i = 0; i < treeCount; i++){
+                Debug.Log(position);
+                float posX = Random.Range(position.x, position.x + terrainSize);
+                Debug.Log( posX);
+                float posZ = Random.Range(position.y, position.y + terrainSize);
+                Debug.Log(posZ);
+                RaycastHit hit = new RaycastHit();
+                Ray ray = new Ray(new Vector3(posX, 100, posZ), Vector3.down);
+
+                if(Physics.Raycast(ray, out hit, 1000, layerMask)){
+                    var distToGround = hit.distance;
+                    float posY = 100 - distToGround;
+                    Debug.Log(posY);
+                    if(posY >= minTreeHeight && posY <= maxTreeHeight){
+                        Instantiate(_tree, new Vector3(posX, posY, posZ), Quaternion.Euler(0,0,0));
+                        
+                    }
+                }
+                else{Debug.Log("Raycast fehlgeschlagen");}
+                float rnd = Random.Range(0, 5);
+                    GameObject tree = Instantiate(_tree, new Vector3(posX, rnd, posZ), Quaternion.Euler(0,0,0));
+                    
+            }
+            
+        }
+        
 
         void OnMapDataReceived(MapData mapData){
             this.mapData = mapData;
@@ -192,7 +237,4 @@ public class EndlessTerrain : MonoBehaviour
         public float visibleDstThreshold;
         public bool useForCollider;
     }
-        
-
-    
 }

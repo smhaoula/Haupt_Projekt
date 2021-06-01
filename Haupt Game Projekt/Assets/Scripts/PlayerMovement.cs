@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     public float turnSmoothTime = 1f;
     float turnSmoothVelocitiy;
     Animator _animator;
+    bool fight;
+    bool roll;
     public int maxHealth = 100;
     public int currentHealth;
 
@@ -49,7 +51,32 @@ public class PlayerMovement : MonoBehaviour
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f)* Vector3.forward;
             controller.Move(moveDir.normalized*speed*Time.deltaTime);
         }
+
+        if(Input.GetMouseButtonDown(0)){
+            fight = true;
+             _animator.SetBool("Fight", fight);
+            StartCoroutine(FightAnimation());
+        }
+
+        if(Input.GetMouseButtonDown(1)){
+            roll = true;
+            _animator.SetBool("Roll", roll);
+            StartCoroutine(RollAnimation());
+
+        }
         
+    }
+
+    IEnumerator FightAnimation(){
+        yield return new WaitForSeconds(0.5f);
+        fight = false;
+         _animator.SetBool("Fight", fight);
+    }
+
+    IEnumerator RollAnimation(){
+        yield return new WaitForSeconds(0.5f);
+        roll = false;
+         _animator.SetBool("Roll", roll);
     }
 
     void FixedUpdate(){
