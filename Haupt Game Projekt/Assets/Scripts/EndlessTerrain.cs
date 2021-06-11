@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class EndlessTerrain : MonoBehaviour
 {
+    public GameObject village;
+    public GameObject nature;
     public GameObject tree;
+    public GameObject grass;
     const float viewerMoveThresholdForChunkUpdate = 25f;
     const float squareViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
     public static float maxViewDst;
@@ -33,15 +36,6 @@ public class EndlessTerrain : MonoBehaviour
             UpdateVisibleChunks();
         }
     }
-
-    void LateUpdate(){
-        foreach(var value in terrainChunkDictionary.Values){
-            if(!value.generatedNature){
-                value.SpawnTrees();
-                value.generatedNature = true;
-            }
-        }
-    }
     void UpdateVisibleChunks(){
 
         for(int i = 0; i < terrainChunksVisibleLastUpdate.Count; i++){
@@ -58,21 +52,26 @@ public class EndlessTerrain : MonoBehaviour
 
                 if(terrainChunkDictionary.ContainsKey(viewedChunkCoord)){
                     terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
-                    
                 }
                 else{
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, tree));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, tree, grass, nature, village));
+                    
                 }
             }
         }
     }
 
+
     public class TerrainChunk{
+        GameObject _village;
+        GameObject _nature;
+        GameObject _grass;
         public bool generatedNature;
         GameObject _tree;
         TextureData textureData = mapGenerator.textureData;
         GameObject meshObject;
         public Vector2 position;
+        public Vector2 startOfChunkPosition;
         public Bounds bounds;
 
         MapData mapData;
@@ -87,20 +86,30 @@ public class EndlessTerrain : MonoBehaviour
         int previousLODIndex = -1;
         int terrainSize;
 
-        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree){
+        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village){
+            _village = village;
+            _nature = nature;
             _tree = tree;
+            _grass = grass;
             generatedNature = false;
             this.detailLevels = detailLevels;
             position = coord * size;
+            //Debug.Log(position);
+            startOfChunkPosition.x = position.x - size/2;
+            startOfChunkPosition.y = position.y - size/2;
+            
             terrainSize = size;
             bounds = new Bounds(position,Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
+
+            Debug.DrawRay(new Vector3(position.x, 100, position.y), Vector3.down*200, Color.red, 20f);
 
             meshObject = new GameObject("Terrain Chunk");
             meshObject.layer = 6;
             meshRenderer = meshObject.AddComponent<MeshRenderer>();
             meshFilter = meshObject.AddComponent<MeshFilter>();
             meshCollider = meshObject.AddComponent<MeshCollider>();
+            
             meshRenderer.material = material;
 
             meshObject.transform.position = positionV3 * mapGenerator.terrainData.uniformScale;
@@ -119,34 +128,115 @@ public class EndlessTerrain : MonoBehaviour
         }
 
         public void SpawnTrees(){
-            float minTreeHeight = textureData.layers[2].startHeight * mapGenerator.noiseData.noiseScale;
+            float minTreeHeight = textureData.layers[1].startHeight * mapGenerator.noiseData.noiseScale;
             float maxTreeHeight = textureData.layers[4].startHeight * mapGenerator.noiseData.noiseScale;
-            int treeCount = 5;
+            int treeCount = 20;
             int layerMask = LayerMask.GetMask("Terrain");
             for(int i = 0; i < treeCount; i++){
-                Debug.Log(position);
-                float posX = Random.Range(position.x, position.x + terrainSize);
-                Debug.Log( posX);
-                float posZ = Random.Range(position.y, position.y + terrainSize);
-                Debug.Log(posZ);
+                //Debug.Log(position);
+                float posX = Random.Range(startOfChunkPosition.x, startOfChunkPosition.x + terrainSize);
+                //Debug.Log( posX);
+                float posZ = Random.Range(startOfChunkPosition.y, startOfChunkPosition.y + terrainSize);
+                //Debug.Log(posZ);
+               
                 RaycastHit hit = new RaycastHit();
-                Ray ray = new Ray(new Vector3(posX, 100, posZ), Vector3.down);
-
-                if(Physics.Raycast(ray, out hit, 1000, layerMask)){
-                    var distToGround = hit.distance;
-                    float posY = 100 - distToGround;
-                    Debug.Log(posY);
+                var p = new Vector3(posX, 100, posZ);
+                Ray ray = new Ray(p, Vector3.down*200);
+                //Debug.DrawRay(p, Vector3.down*200, Color.red, 20f);
+                if(Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)){
+                    float posY = hit.point.y;
+                    //Debug.Log(posY);
                     if(posY >= minTreeHeight && posY <= maxTreeHeight){
-                        Instantiate(_tree, new Vector3(posX, posY, posZ), Quaternion.Euler(0,0,0));
-                        
+                        Vector3 spawnPos = new Vector3(posX, posY, posZ);
+                        GameObject t = Instantiate(_tree, spawnPos, Quaternion.Euler(0,0,0));
+                        t.transform.parent = _nature.transform;
+
+                        for(int y = 0; y < 5; y++){
+                            float offset1 = Random.Range(-5,5);
+                            float offset2 = Random.Range(-5, 5);
+
+                            RaycastHit hitGrass = new RaycastHit();
+                            var gr = new Vector3(spawnPos.x + offset1, 100, spawnPos.z + offset2);
+                            Ray grassRay = new Ray(gr, Vector3.down*200);
+                            if(Physics.Raycast(grassRay, out hitGrass, Mathf.Infinity)){
+                                float posGrassY = hit.point.y;
+                                if(posGrassY >= minTreeHeight && posGrassY <= maxTreeHeight){
+                                    Vector3 grassSpawnPos = new Vector3(spawnPos.x + offset1, posGrassY, spawnPos.z + offset2);
+                                    GameObject g = Instantiate(_grass, grassSpawnPos, Quaternion.Euler(0,0,0));
+                                    g.transform.parent = _nature.transform;
+                                }
+                            }
+                        }
                     }
                 }
-                else{Debug.Log("Raycast fehlgeschlagen");}
-                float rnd = Random.Range(0, 5);
-                    GameObject tree = Instantiate(_tree, new Vector3(posX, rnd, posZ), Quaternion.Euler(0,0,0));
-                    
+                else
+                {
+                    //Debug.Log("Raycast fehlgeschlagen");
+                }
             }
-            
+        }
+
+        public void SpawnGrass(){
+            float minGrassHeight = textureData.layers[1].startHeight * mapGenerator.noiseData.noiseScale;
+            float maxGrassHeight = textureData.layers[4].startHeight * mapGenerator.noiseData.noiseScale;
+            int grassCount = 70;
+            int layerMask = LayerMask.GetMask("Terrain");
+
+            for(int i = 0; i < grassCount; i++){
+                //Debug.Log(position);
+                float posX = Random.Range(startOfChunkPosition.x, startOfChunkPosition.x + terrainSize);
+                //Debug.Log( posX);
+                float posZ = Random.Range(startOfChunkPosition.y, startOfChunkPosition.y + terrainSize);
+                //Debug.Log(posZ);
+               
+                RaycastHit hit = new RaycastHit();
+                var p = new Vector3(posX, 100, posZ);
+                Ray ray = new Ray(p, Vector3.down*200);
+                //Debug.DrawRay(p, Vector3.down*200, Color.red, 20f);
+                if(Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)){
+                    float posY = hit.point.y;
+                    //Debug.Log(posY);
+                    if(posY >= minGrassHeight && posY <= maxGrassHeight){
+                        Vector3 spawnPos = new Vector3(posX, posY, posZ);
+                        GameObject t = Instantiate(_grass, spawnPos, Quaternion.Euler(0,0,0));
+                        
+                        t.transform.parent = _nature.transform;
+                    }
+                }
+            }
+        }
+
+        public bool SpawnVillage(){
+            float minVillageHeight = textureData.layers[3].startHeight * mapGenerator.noiseData.noiseScale;
+            float maxVillageHeight = textureData.layers[4].startHeight * mapGenerator.noiseData.noiseScale;
+            int villageCount = 1;
+
+            for(int i = 0; i < villageCount; i++){
+                //Debug.Log(position);
+                float posX = Random.Range(startOfChunkPosition.x, startOfChunkPosition.x + terrainSize);
+                //Debug.Log( posX);
+                float posZ = Random.Range(startOfChunkPosition.y, startOfChunkPosition.y + terrainSize);
+                //Debug.Log(posZ);
+               
+                RaycastHit hit = new RaycastHit();
+                var p = new Vector3(posX, 100, posZ);
+                Ray ray = new Ray(p, Vector3.down*200);
+                //Debug.DrawRay(p, Vector3.down*200, Color.red, 20f);
+                if(Physics.Raycast(ray, out hit, Mathf.Infinity)){
+                    float posY = hit.point.y;
+                    //Debug.Log(posY);
+                    if(posY >= minVillageHeight && posY <= maxVillageHeight){
+                        Vector3 spawnPos = new Vector3(posX, posY, posZ);
+                        GameObject t = Instantiate(_village, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
+                        
+                        t.transform.parent = _nature.transform;
+                    }
+                }
+                else{
+                    return false;
+                }
+            }
+            return true;
         }
         
 
@@ -175,6 +265,25 @@ public class EndlessTerrain : MonoBehaviour
                         if(lODMesh.hasMesh){
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lODMesh.mesh;
+
+                            /*float minTreeHeight = textureData.layers[2].startHeight * mapGenerator.noiseData.noiseScale;
+                            float maxTreeHeight = textureData.layers[4].startHeight * mapGenerator.noiseData.noiseScale;
+                            int counter = 5;
+                            if(!generatedNature){
+                                int count = meshFilter.mesh.vertexCount;
+                                foreach(Vector3 vertex in meshFilter.mesh.vertices){
+                                    if(counter > 0){
+                                        Debug.Log("Vertex gefunden");
+                                        if(vertex.y >= minTreeHeight&& vertex.y <= maxTreeHeight ){
+                                            GameObject tree = Instantiate(_tree, new Vector3(vertex.x, vertex.y, vertex.z), Quaternion.Euler(0,0,0));
+                                        }
+                                        counter--;
+                                    }
+                                    else{break;}
+                                }
+                                generatedNature = true;
+                            }*/
+                            
                             
                         }
                         else if(!lODMesh.hasRequestedMesh){
@@ -185,12 +294,25 @@ public class EndlessTerrain : MonoBehaviour
                     if(lodIndex==0){
                         if(collisionLODMesh.hasMesh){
                             meshCollider.sharedMesh = collisionLODMesh.mesh;
+                            
+                            
+                            
+                            if(!generatedNature){
+                                if(SpawnVillage()){
+                                    generatedNature = true;
+                                }
+                                SpawnTrees();
+                                SpawnGrass();
+                            }
+                        
+                        
                         }
                         else if(!collisionLODMesh.hasRequestedMesh){
                             collisionLODMesh.RequestMesh(mapData);
                         }
                     }
 
+                   
                     terrainChunksVisibleLastUpdate.Add(this);
                 }
                 SetVisible(visible);
