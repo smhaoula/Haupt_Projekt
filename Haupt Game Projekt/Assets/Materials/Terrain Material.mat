@@ -115,10 +115,13 @@ Material:
     m_Ints: []
     m_Floats:
     - GrassHeight: 1.75
-    - RocksHeight: 11.19
+    - RippleDensity: 140.39
+    - RippleSlimness: 5.8
+    - RippleSpeed: 0.84
+    - RocksHeight: 16.87
     - SandHeight: 0.33
-    - SnowHeight: 20.77
-    - StonyGroundHeight: 6.23
+    - SnowHeight: 32.7
+    - StonyGroundHeight: 7.54
     - WaterHeight: 0
     - _AlphaClip: 0
     - _Blend: 0
@@ -147,6 +150,8 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - RippleColor: {r: 0.3686275, g: 0.4929429, b: 0.85882354, a: 0}
+    - WaterBaseColor: {r: 0.1568627, g: 0.4700215, b: 0.90588236, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
