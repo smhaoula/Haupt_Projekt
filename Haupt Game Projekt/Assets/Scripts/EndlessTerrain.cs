@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EndlessTerrain : MonoBehaviour
 {
+    [SerializeField]
+    private Transform mapgenarator;
     public GameObject village;
     public GameObject nature;
     public GameObject tree;
@@ -21,13 +24,25 @@ public class EndlessTerrain : MonoBehaviour
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
     static List<TerrainChunk> terrainChunksVisibleLastUpdate = new List<TerrainChunk>();
     public Material mapMaterial;
+    private NavMeshSurface[] Surfaces;
+    private void Awake()
+    {
+        
+            if (mapgenarator == null || mapgenarator.GetComponent<NavMeshSurface>() == null)
+            {
+                Debug.LogError("mapgenerator Manager must be assigned and must have at least 1 NavMeshSurface!");
+                gameObject.SetActive(false);
+                return;
+            }
+        Surfaces = mapgenarator.GetComponentsInChildren<NavMeshSurface>();
+    }
     void Start(){
         mapGenerator = FindObjectOfType<MapGenerator>();
         maxViewDst = detailLevels[detailLevels.Length-1].visibleDstThreshold;
         chunkSize = MapGenerator.mapChunkSize-1;
         chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst/chunkSize);
         UpdateVisibleChunks();
-        
+
     }
     void Update(){
         viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / mapGenerator.terrainData.uniformScale;
@@ -58,7 +73,12 @@ public class EndlessTerrain : MonoBehaviour
                     
                 }
             }
+
         }
+        //for (int i = 0; i < Surfaces.Length; i++)
+        //{
+        //    Surfaces[i].BuildNavMesh();
+        //}
     }
 
 
