@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         gameObject.tag = "Player";
-        //currentHealth=maxHealth;
+        currentHealth=maxHealth;
         //healthBar.SetMaxHealth(maxHealth);
     }
 
@@ -81,6 +81,12 @@ public class PlayerMovement : MonoBehaviour
 
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f)* Vector3.forward;
             controller.Move(moveDir.normalized*speed*Time.deltaTime);
+        }
+    }
+
+    void OnCollisionEnter(Collision collision){
+        if(collision.gameObject.tag.Equals("Enemy")){
+            currentHealth = currentHealth-10;
         }
     }
 

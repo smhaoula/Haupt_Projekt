@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 8707748171920154837}
   - component: {fileID: 8707748171920154839}
   - component: {fileID: 8707748171920154836}
+  - component: {fileID: 3661790695419566904}
   m_Layer: 0
   m_Name: Fantasy_Chest
   m_TagString: Untagged
@@ -146,7 +147,7 @@ BoxCollider:
   m_GameObject: {fileID: 8709332569337868738}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1.43, y: 1.3, z: 1.42}
   m_Center: {x: -0.64, y: 0.17, z: -0.01}
@@ -159,7 +160,7 @@ BoxCollider:
   m_GameObject: {fileID: 8709332569337868738}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1.15, y: 1.48, z: 1.34}
   m_Center: {x: -0.02, y: 0.27, z: 0.03}
@@ -175,6 +176,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa675e80d5cccf146a222652f2832366, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!208 &3661790695419566904
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8709332569337868738}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.655, y: 0.5, z: 0.9}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.03, y: 0, z: 0.01}
+  m_TimeToStationary: 0.5
 --- !u!1 &8709425215426863766
 GameObject:
   m_ObjectHideFlags: 0
