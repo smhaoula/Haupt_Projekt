@@ -75,10 +75,10 @@ public class EndlessTerrain : MonoBehaviour
             }
 
         }
-      /*  for (int i = 0; i < Surfaces.Length; i++)
-        {
-            Surfaces[i].BuildNavMesh();
-        }*/
+        //for (int i = 0; i < Surfaces.Length; i++)
+        //{
+        //    Surfaces[i].BuildNavMesh();
+        //}
     }
 
 
