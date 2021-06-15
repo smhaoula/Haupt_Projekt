@@ -505,15 +505,18 @@ MonoBehaviour:
   nature: {fileID: 1660887632}
   tree: {fileID: 1148613061152340, guid: eded051879df4c147b9010199d240258, type: 3}
   grass: {fileID: 6047091299831746666, guid: 44241fcd6a73eb141b48ba54ff9aa0da, type: 3}
+  rock: {fileID: 1000010869019282, guid: d7ba4fe833670a140b9b6085652f0e26, type: 3}
+  pine: {fileID: 199518, guid: 17de3c1426f928b4e97bb2feeeb4d11e, type: 3}
+  mushroom: {fileID: 180336, guid: a2d90428d4402a64ca9aa7ae580033f8, type: 3}
   detailLevels:
   - lod: 0
-    visibleDstThreshold: 200
+    visibleDstThreshold: 50
     useForCollider: 0
   - lod: 1
-    visibleDstThreshold: 300
+    visibleDstThreshold: 100
     useForCollider: 1
   - lod: 4
-    visibleDstThreshold: 500
+    visibleDstThreshold: 200
     useForCollider: 0
   viewer: {fileID: 503379915}
   mapMaterial: {fileID: 2100000, guid: 7a9c9b835f1cc50459e737e6d57a9217, type: 2}
@@ -2692,14 +2695,14 @@ MonoBehaviour:
     m_Bits: 0
   m_MinimumDistanceFromTarget: 0.1
   m_AvoidObstacles: 1
-  m_DistanceLimit: 0
+  m_DistanceLimit: 1
   m_MinimumOcclusionTime: 0
   m_CameraRadius: 0.1
   m_Strategy: 0
   m_MaximumEffort: 4
   m_SmoothingTime: 0
-  m_Damping: 0
-  m_DampingWhenOccluded: 0
+  m_Damping: 1.7
+  m_DampingWhenOccluded: 1.85
   m_OptimalTargetDistance: 0
 --- !u!114 &885794104
 MonoBehaviour:
@@ -2730,7 +2733,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3097713, y: 1}
+    m_SensorSize: {x: 1.7237687, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2746,7 +2749,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885794102}
-  m_LocalRotation: {x: 0.15288766, y: 0.00000002060693, z: -0.0000000031880252, w: 0.9882436}
+  m_LocalRotation: {x: 0.15288766, y: -0.00000002060693, z: 0.0000000031880252, w: 0.9882436}
   m_LocalPosition: {x: -8.72, y: 4.83, z: 21.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6046,7 +6049,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127956284}
-  m_LocalRotation: {x: 0.15288766, y: 0.00000002060693, z: -0.0000000031880252, w: 0.9882436}
+  m_LocalRotation: {x: 0.15288766, y: -0.00000002060693, z: 0.0000000031880252, w: 0.9882436}
   m_LocalPosition: {x: -8.72, y: 4.83, z: 21.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
