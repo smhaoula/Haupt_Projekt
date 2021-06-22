@@ -10,10 +10,11 @@ public class PlayerSpawning : MonoBehaviour
         
         StartCoroutine(SpawnWait());
     }
+
     
     IEnumerator SpawnWait()
     {
-       // player.SetActive(false);
+        player.SetActive(false);
         yield return new WaitForSeconds(seconds);
         player.SetActive(true);
     }
