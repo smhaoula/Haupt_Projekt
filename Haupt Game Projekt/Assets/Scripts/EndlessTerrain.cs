@@ -126,16 +126,16 @@ public class EndlessTerrain : MonoBehaviour
             //Debug.Log(position);
             
             
-            //terrainSize = Mathf.RoundToInt(size*mapGenerator.noiseData.noiseScale);
-            terrainSize = size;
+            terrainSize = Mathf.RoundToInt(size*mapGenerator.terrainData.uniformScale);
+            //terrainSize = size;
             bounds = new Bounds(position,Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
 
-            //startOfChunkPosition.x = bounds.center.x - size/2;
-            //startOfChunkPosition.y = bounds.center.z - size/2;
-            //startOfChunkPosition = startOfChunkPosition* mapGenerator.noiseData.noiseScale;
-            startOfChunkPosition.x = position.x - size/2;
-            startOfChunkPosition.y = position.y - size/2;
+            startOfChunkPosition.x = bounds.center.x - size/2;
+            startOfChunkPosition.y = bounds.center.z - size/2;
+            startOfChunkPosition = startOfChunkPosition* mapGenerator.terrainData.uniformScale;
+            //startOfChunkPosition.x = position.x - size/2;
+            //startOfChunkPosition.y = position.y - size/2;
 
             Debug.DrawRay(new Vector3(position.x, 100, position.y), Vector3.down*200, Color.red, 20f);
 
