@@ -15,9 +15,9 @@ TagManager:
   - Water
   - UI
   - Terrain
-  - 
-  - 
-  - 
+  - EnemyAttackRadius
+  - Enemy
+  - LineOfSightLayers
   - 
   - 
   - 
