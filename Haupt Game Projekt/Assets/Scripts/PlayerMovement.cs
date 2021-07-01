@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
-    //public HealthBar healthBar;
+    public HealthBar healthBar;
 
     void Awake() => _animator = GetComponent<Animator>();
     
@@ -26,11 +26,11 @@ public class PlayerMovement : MonoBehaviour
     {
         gameObject.tag = "Player";
         currentHealth=maxHealth;
-        //healthBar.SetMaxHealth(maxHealth);
+        healthBar.SetMaxHealth(maxHealth);
     }
 
     void Update(){
-        float horizontal = Input.GetAxisRaw("Horizontal");
+        /*float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
         direction = new Vector3(horizontal, 0f, vertical).normalized;
@@ -41,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
 
         _animator.SetFloat("VelocityZ", velocityZ, 0.1f, Time.deltaTime);
         _animator.SetFloat("VelocityX", velocityX, 0.1f, Time.deltaTime);
-
+*/
         
 
         if(Input.GetMouseButtonDown(0)){
@@ -72,6 +72,18 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void FixedUpdate(){
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        direction = new Vector3(horizontal, 0f, vertical).normalized;
+        
+        //Animation
+        float velocityZ = Vector3.Dot(direction, transform.forward);
+        float velocityX = Vector3.Dot(direction, transform.right);
+
+        _animator.SetFloat("VelocityZ", velocityZ, 0.1f, Time.deltaTime);
+        _animator.SetFloat("VelocityX", velocityX, 0.1f, Time.deltaTime);
+
 
         if(direction.magnitude >= 0.1f){
 
@@ -87,6 +99,7 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionEnter(Collision collision){
         if(collision.gameObject.tag.Equals("Enemy")){
             currentHealth = currentHealth-10;
+            healthBar.SetHealth(currentHealth);
         }
     }
 
