@@ -25,7 +25,8 @@ public class Enemyki : MonoBehaviour
 
 
     private const string iswalking = "iswalking";
-    
+    private const string isattacking = "isattacking";
+
 
     private Coroutine FollowCoroutine;
     public float IdleLocationRadius = 4f;
@@ -53,6 +54,7 @@ public class Enemyki : MonoBehaviour
         
         Agent = GetComponent<NavMeshAgent>();
         Triangulation = NavMesh.CalculateTriangulation();
+        target = GameObject.FindGameObjectWithTag("Player").transform;
 
 
         OnStateChange += HandleStateChange;
@@ -148,7 +150,12 @@ public class Enemyki : MonoBehaviour
         {
             if (Agent.enabled)
             {
-                Agent.SetDestination(Player.transform.position);
+                float distance = Vector3.Distance(transform.position, target.position);
+                if (distance > 1.5)
+                {
+                    Agent.SetDestination(Player.transform.position);
+                }
+               
             }
             yield return Wait;
         }
