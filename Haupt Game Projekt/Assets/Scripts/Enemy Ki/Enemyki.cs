@@ -9,7 +9,6 @@ using UnityEngine.AI;
 public class Enemyki : MonoBehaviour
 {
     public Transform Player;
-
     public NavMeshTriangulation Triangulation;
     public EnemyLineOfSightChecker LineOfSightChecker;
     [SerializeField]
