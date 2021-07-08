@@ -55,6 +55,7 @@ public class Enemyki : MonoBehaviour
         Agent = GetComponent<NavMeshAgent>();
         Triangulation = NavMesh.CalculateTriangulation();
         target = GameObject.FindGameObjectWithTag("Player").transform;
+        anim = GetComponent<Animator>();
 
 
         OnStateChange += HandleStateChange;
@@ -151,11 +152,13 @@ public class Enemyki : MonoBehaviour
             if (Agent.enabled)
             {
                 float distance = Vector3.Distance(transform.position, target.position);
-              
-                
+                if (distance > 2)
+                {
+
                     Agent.SetDestination(Player.transform.position);
-               
-                
+
+                }
+                else { anim.SetBool("isattacking", true); }
                    
                 
             }
