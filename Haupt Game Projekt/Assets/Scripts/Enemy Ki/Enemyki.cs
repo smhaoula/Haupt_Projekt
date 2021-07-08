@@ -151,11 +151,13 @@ public class Enemyki : MonoBehaviour
             if (Agent.enabled)
             {
                 float distance = Vector3.Distance(transform.position, target.position);
-                if (distance > 1.5)
-                {
+              
+                
                     Agent.SetDestination(Player.transform.position);
-                }
                
+                
+                   
+                
             }
             yield return Wait;
         }

@@ -21,9 +21,11 @@ public class AttackRadius : MonoBehaviour
 
     protected virtual void OnTriggerEnter(Collider other)
     {
+       
         IDamageable damageable = other.GetComponent<IDamageable>();
         if (damageable != null)
         {
+            Debug.Log("aaaaaaaaaaaaa");
             Damageables.Add(damageable);
 
             if (AttackCoroutine == null)
@@ -54,24 +56,28 @@ public class AttackRadius : MonoBehaviour
         yield return Wait;
 
         IDamageable closestDamageable = null;
-        float closestDistance = float.MaxValue;
+        float closestDistance = 2;
 
         while (Damageables.Count > 0)
         {
             for (int i = 0; i < Damageables.Count; i++)
             {
+                
                 Transform damageableTransform = Damageables[i].GetTransform();
                 float distance = Vector3.Distance(transform.position, damageableTransform.position);
-
+                Debug.Log("aaaaaaaaaaaaa");
+                Debug.Log("bbbbb");
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;
                     closestDamageable = Damageables[i];
                 }
+
             }
 
             if (closestDamageable != null)
             {
+                Debug.Log("ccccccc");
                 OnAttack?.Invoke(closestDamageable);
                 closestDamageable.TakeDamage(Damage);
             }

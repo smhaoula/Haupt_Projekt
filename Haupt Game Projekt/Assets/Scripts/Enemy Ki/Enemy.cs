@@ -1,70 +1,77 @@
-//using System.Collections;
-//using UnityEngine;
-//using UnityEngine.AI;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.AI;
 
-//public class Enemy : PoolableObject, IDamageable
-//{
-//    public AttackRadius AttackRadius;
-//    public Animator Animator;
-//    public Enemyki Movement;
-//    public NavMeshAgent Agent;
-//    public int Health = 100;
+public class Enemy : PoolableObject, IDamageable
+{
+    public AttackRadius AttackRadius;
+    public Animator Animator;
+    public Enemyki Movement;
+    public NavMeshAgent Agent;
+    public int Health = 100;
 
-//    private Coroutine LookCoroutine;
-//    private const string ATTACK_TRIGGER = "Attack";
+    private Coroutine LookCoroutine;
+    private const string ATTACK_TRIGGER = "Attack";
 
-//    private void Awake()
-//    {
-//        AttackRadius.OnAttack += OnAttack;
-//    }
+    private void Awake()
+    {
+        AttackRadius.OnAttack += OnAttack;
+    }
 
-//    private void OnAttack(IDamageable Target)
-//    {
-//        Animator.SetTrigger(ATTACK_TRIGGER);
+    private void Update()
+    {
+        
+    }
 
-//        if (LookCoroutine != null)
-//        {
-//            StopCoroutine(LookCoroutine);
-//        }
+    private void OnAttack(IDamageable Target)
+    {
+        Debug.Log("aaaaaaaaaaaaa");
+        Animator.SetTrigger(ATTACK_TRIGGER);
+        Animator.SetBool("iswalking", false);
 
-//        LookCoroutine = StartCoroutine(LookAt(Target.GetTransform()));
-//    }
+        if (LookCoroutine != null)
+        {
+            StopCoroutine(LookCoroutine);
+        }
 
-//    private IEnumerator LookAt(Transform Target)
-//    {
-//        Quaternion lookRotation = Quaternion.LookRotation(Target.position - transform.position);
-//        float time = 0;
+        LookCoroutine = StartCoroutine(LookAt(Target.GetTransform()));
+    }
 
-//        while (time < 1)
-//        {
-//            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, time);
+    private IEnumerator LookAt(Transform Target)
+    {
+        Quaternion lookRotation = Quaternion.LookRotation(Target.position - transform.position);
+        float time = 0;
 
-//            time += Time.deltaTime * 2;
-//            yield return null;
-//        }
+        while (time < 1)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, time);
 
-//        transform.rotation = lookRotation;
-//    }
+            time += Time.deltaTime * 2;
+            yield return null;
+        }
 
-//    public override void OnDisable()
-//    {
-//        base.OnDisable();
+        transform.rotation = lookRotation;
+    }
 
-//        Agent.enabled = false;
-//    }
+    public override void OnDisable()
+    {
+        base.OnDisable();
 
-//    public void TakeDamage(int Damage)
-//    {
-//        Health -= Damage;
+        Agent.enabled = false;
+    }
 
-//        if (Health <= 0)
-//        {
-//            gameObject.SetActive(false);
-//        }
-//    }
+    public void TakeDamage(int Damage)
+    {
+        Health -= Damage;
 
-//    public Transform GetTransform()
-//    {
-//        return transform;
-//    }
-//}
+        if (Health <= 0)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    public Transform GetTransform()
+    {
+        return transform;
+    }
+}

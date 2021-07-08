@@ -15,10 +15,10 @@ TagManager:
   - Water
   - UI
   - Terrain
-  - 
-  - 
-  - 
-  - 
+  - AttackRadius
+  - Character
+  - Character Collision Blocker
+  - LineOfSightchecker
   - 
   - 
   - 

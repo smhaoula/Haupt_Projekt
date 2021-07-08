@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour , IDamageable
 {
     public CharacterController controller;
 
@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     Animator _animator;
     bool fight;
     bool roll;
-    public int maxHealth = 100;
+    public int Health = 100;
     public int currentHealth;
 
     public HealthBar healthBar;
@@ -25,8 +25,8 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         gameObject.tag = "Player";
-        currentHealth=maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
+        currentHealth=Health;
+        healthBar.SetMaxHealth(Health);
     }
 
     void Update(){
@@ -103,4 +103,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void TakeDamage(int Damage)
+    {
+        Health -= Damage;
+
+        if (Health <= 0)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    public Transform GetTransform()
+    {
+        return transform;
+    }
 }
