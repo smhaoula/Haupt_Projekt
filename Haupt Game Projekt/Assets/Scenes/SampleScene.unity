@@ -2754,7 +2754,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.2719486, y: 1}
+    m_SensorSize: {x: 1.8313253, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2770,7 +2770,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885794102}
-  m_LocalRotation: {x: -0.0032623857, y: 0.9905956, z: -0.13466208, w: -0.023998627}
+  m_LocalRotation: {x: -0.003262388, y: 0.9905956, z: -0.13466208, w: -0.023998644}
   m_LocalPosition: {x: -36.415756, y: 5.16, z: 45.59827}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3811,7 +3811,6 @@ GameObject:
   - component: {fileID: 1232145964}
   - component: {fileID: 1232145963}
   - component: {fileID: 1232145965}
-  - component: {fileID: 1232145966}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -3965,22 +3964,6 @@ MonoBehaviour:
   AttackRadius: {fileID: 1712119707}
   Animator: {fileID: 1232145961}
   Health: 300
---- !u!208 &1232145966
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1232145956}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 0
-  m_Extents: {x: 0.28, y: 1.09, z: 0.28}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 1.21, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!4 &1234070269 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400044, guid: 7e30eee73c241d5448ce0ac372cf6602, type: 3}
@@ -6675,7 +6658,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127956284}
-  m_LocalRotation: {x: -0.0032623857, y: 0.9905956, z: -0.13466208, w: -0.023998627}
+  m_LocalRotation: {x: -0.003262388, y: 0.9905956, z: -0.13466208, w: -0.023998644}
   m_LocalPosition: {x: -36.415756, y: 5.16, z: 45.59827}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

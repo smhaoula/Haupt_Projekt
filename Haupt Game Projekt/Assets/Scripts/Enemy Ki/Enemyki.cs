@@ -181,11 +181,15 @@ public class Enemyki : MonoBehaviour
                 float distance = Vector3.Distance(transform.position, target.position);
                 if (distance > 2)
                 {
+                    Agent.isStopped = false;
                     anim.SetBool("isattacking", false);
                     Agent.SetDestination(Player.transform.position);
 
                 }
-                else { anim.SetBool("isattacking", true); }
+                else {
+                   Agent.isStopped = true;
+
+                    anim.SetBool("isattacking", true); }
                    
                 
             }
