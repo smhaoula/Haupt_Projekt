@@ -11,9 +11,6 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Fight
     m_EventTreshold: 0
-  - m_ConditionMode: 1
-    m_ConditionEvent: ATTACK_TRIGGER
-    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102678307518385000}
   m_Solo: 0

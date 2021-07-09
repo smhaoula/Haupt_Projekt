@@ -78,10 +78,16 @@ public class EndlessTerrain : MonoBehaviour
             }
 
         }
-      //  for (int i = 0; i < Surfaces.Length; i++)
+        /*foreach(KeyValuePair<Vector2, TerrainChunk> obj in terrainChunkDictionary){
+            if(!obj.Value.generatedNavmesh){
+                obj.Value
+            }
+        }*/
+        
+        //for (int i = 0; i < Surfaces.Length; i++)
         //{
-          //  Surfaces[i].BuildNavMesh();
-     //   }
+          //Surfaces[i].BuildNavMesh();
+        //}
     }
 
 
@@ -93,6 +99,7 @@ public class EndlessTerrain : MonoBehaviour
         GameObject _rock;
         GameObject _mushroom;
         public bool generatedNature;
+        public bool generatedNavmesh;
         GameObject _tree;
         TextureData textureData = mapGenerator.textureData;
         GameObject meshObject;
@@ -121,6 +128,7 @@ public class EndlessTerrain : MonoBehaviour
             _rock = rock;
             _mushroom = mushroom;
             generatedNature = false;
+            generatedNavmesh = false;
             this.detailLevels = detailLevels;
             position = coord * size;
             //Debug.Log(position);

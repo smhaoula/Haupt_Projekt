@@ -48,6 +48,16 @@ public class PlayerMovement : MonoBehaviour , IDamageable
             fight = true;
              _animator.SetBool("Fight", fight);
             StartCoroutine(FightAnimation());
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
+            foreach (Collider hitCollider in hitColliders)
+            {
+                Debug.Log(hitCollider.tag);
+                
+                if(hitCollider.gameObject.tag.Equals("EnemyCollider")){
+                    GameObject parentObject = hitCollider.transform.parent.gameObject;
+                    parentObject.GetComponent<Enemyki>().TakeDamage();
+                }
+            }
         }
 
         if(Input.GetMouseButtonDown(1)){
@@ -97,7 +107,7 @@ public class PlayerMovement : MonoBehaviour , IDamageable
     }
 
     void OnCollisionEnter(Collision collision){
-        if(collision.gameObject.tag.Equals("Enemy")){
+        if(collision.gameObject.tag.Equals("EnemyCollider")){
             currentHealth = currentHealth-10;
             healthBar.SetHealth(currentHealth);
         }

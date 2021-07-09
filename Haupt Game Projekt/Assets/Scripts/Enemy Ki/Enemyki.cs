@@ -18,6 +18,11 @@ public class Enemyki : MonoBehaviour
     NavMeshAgent Agent;
     Animator anim;
 
+    public HealthBar healthBar;
+    public int Health = 100;
+    public int currentHealth;
+    public bool isDefeated;
+
 
     public Vector3[] Waypoints = new Vector3[4];
     [SerializeField]
@@ -71,9 +76,31 @@ public class Enemyki : MonoBehaviour
 
     private void Start()
     {
+        currentHealth = Health;
+        healthBar.SetMaxHealth(Health);
+        isDefeated = false;
         Triangulation = NavMesh.CalculateTriangulation();
         Spawn();
     }
+
+    public void TakeDamage(){
+        currentHealth = currentHealth-10;
+        healthBar.SetHealth(currentHealth);
+
+        if(currentHealth <= 0){
+            if(!isDefeated){
+                isDefeated = true;
+                anim.SetBool("defeated", true);
+                StartCoroutine(DeathAnimation());            }
+        }
+        
+    }
+
+    IEnumerator DeathAnimation(){
+        yield return new WaitForSeconds(2f);
+        Destroy(gameObject, 1f);
+    }
+
     private void HandleGainSight(Player player)
     {
         State = EnemyState.Chase;

@@ -15,8 +15,8 @@ public class MapGenerator : MonoBehaviour
 
     public Material terrainMaterial;
 
-    public const int mapChunkSize = 119;
-    [Range(0,6)]
+    public const int mapChunkSize = 119;//119
+    [Range(0,6)]//6
     public int editorPreviewLOD;
     
     

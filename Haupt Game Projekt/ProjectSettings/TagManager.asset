@@ -7,6 +7,8 @@ TagManager:
   - Nature
   - Architecture
   - Enemy
+  - Sword
+  - EnemyCollider
   layers:
   - Default
   - TransparentFX
