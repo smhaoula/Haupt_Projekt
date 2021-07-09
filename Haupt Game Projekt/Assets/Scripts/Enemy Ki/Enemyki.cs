@@ -154,7 +154,7 @@ public class Enemyki : MonoBehaviour
                 float distance = Vector3.Distance(transform.position, target.position);
                 if (distance > 2)
                 {
-
+                    anim.SetBool("isattacking", false);
                     Agent.SetDestination(Player.transform.position);
 
                 }
