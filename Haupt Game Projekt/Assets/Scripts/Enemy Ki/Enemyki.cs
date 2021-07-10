@@ -113,12 +113,12 @@ public class Enemyki : MonoBehaviour
         Destroy(gameObject, 1f);
     }
 
-    private void HandleGainSight(Player player)
+    private void HandleGainSight(PlayerMovement player)
     {
         State = EnemyState.Chase;
     }
 
-    private void HandleLoseSight(Player player)
+    private void HandleLoseSight(PlayerMovement player)
     {
         State = DefaultState;
     }

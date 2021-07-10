@@ -9,9 +9,9 @@ public class EnemyLineOfSightChecker : MonoBehaviour
     public float FieldOfView = 90f;
     public LayerMask LineOfSightLayers;
 
-    public delegate void GainSightEvent(Player player);
+    public delegate void GainSightEvent(PlayerMovement player);
     public GainSightEvent OnGainSight;
-    public delegate void LoseSightEvent(Player player);
+    public delegate void LoseSightEvent(PlayerMovement player);
     public LoseSightEvent OnLoseSight;
 
     private Coroutine CheckForLineOfSightCoroutine;
@@ -23,8 +23,8 @@ public class EnemyLineOfSightChecker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Player player;
-        if (other.TryGetComponent<Player>(out player))
+        PlayerMovement player;
+        if (other.TryGetComponent<PlayerMovement>(out player))
         {
             if (!CheckLineOfSight(player))
             {
@@ -35,8 +35,8 @@ public class EnemyLineOfSightChecker : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Player player;
-        if (other.TryGetComponent<Player>(out player))
+        PlayerMovement player;
+        if (other.TryGetComponent<PlayerMovement>(out player))
         {
             OnLoseSight?.Invoke(player);
             if (CheckForLineOfSightCoroutine != null)
@@ -46,7 +46,7 @@ public class EnemyLineOfSightChecker : MonoBehaviour
         }
     }
 
-    private bool CheckLineOfSight(Player player)
+    private bool CheckLineOfSight(PlayerMovement player)
     {
         Vector3 Direction = (player.transform.position - transform.position).normalized;
         float DotProduct = Vector3.Dot(transform.forward, Direction);
@@ -56,7 +56,7 @@ public class EnemyLineOfSightChecker : MonoBehaviour
 
             if (Physics.Raycast(transform.position, Direction, out Hit, Collider.radius, LineOfSightLayers))
             {
-                if (Hit.transform.GetComponent<Player>() != null)
+                if (Hit.transform.GetComponent<PlayerMovement>() != null)
                 {
                     OnGainSight?.Invoke(player);
                     return true;
@@ -67,7 +67,7 @@ public class EnemyLineOfSightChecker : MonoBehaviour
         return false;
     }
 
-    private IEnumerator CheckForLineOfSight(Player player)
+    private IEnumerator CheckForLineOfSight(PlayerMovement player)
     {
         WaitForSeconds Wait = new WaitForSeconds(0.1f);
 
