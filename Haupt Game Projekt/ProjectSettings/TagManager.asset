@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - Sword
   - EnemyCollider
+  - Fire
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Character
   - Character Collision Blocker
   - LineOfSightchecker
-  - 
+  - Fire
   - 
   - 
   - 

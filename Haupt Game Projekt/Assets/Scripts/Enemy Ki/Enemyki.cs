@@ -11,6 +11,7 @@ public class Enemyki : MonoBehaviour
     public Transform Player;
     public NavMeshTriangulation Triangulation;
     public EnemyLineOfSightChecker LineOfSightChecker;
+    public FireChecker fireChecker;
     [SerializeField]
     private Animator Animator = null;
     public float UpdateRate = 0.1f;
@@ -68,6 +69,9 @@ public class Enemyki : MonoBehaviour
         LineOfSightChecker.OnGainSight += HandleGainSight;
         LineOfSightChecker.OnLoseSight += HandleLoseSight;
 
+        fireChecker.OnGainSight += HandleFireSight;
+        fireChecker.OnLoseSight += HandleLoseFireSight;
+
 
         OnStateChange?.Invoke(EnemyState.Spawn, DefaultState);
 
@@ -99,12 +103,6 @@ public class Enemyki : MonoBehaviour
                 healthBar.SetHealth(currentHealth);
             }
         }
-       
-            
-        
-       
-
-    
         
     }
 
@@ -113,6 +111,15 @@ public class Enemyki : MonoBehaviour
         Destroy(gameObject, 1f);
     }
 
+    private void HandleFireSight(Fire player)
+    {
+        State = EnemyState.Idle;
+    }
+
+    private void HandleLoseFireSight(Fire player)
+    {
+        State = DefaultState;
+    }
     private void HandleGainSight(PlayerMovement player)
     {
         State = EnemyState.Chase;
@@ -138,6 +145,7 @@ public class Enemyki : MonoBehaviour
         }
         OnStateChange?.Invoke(EnemyState.Spawn, DefaultState);
     }
+ 
 
 
 

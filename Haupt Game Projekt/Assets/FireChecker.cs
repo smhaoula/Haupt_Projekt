@@ -3,40 +3,34 @@ using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(SphereCollider))]
-public class EnemyLineOfSightChecker : MonoBehaviour
+public class FireChecker : MonoBehaviour
 {
     public SphereCollider Collider;
     public float FieldOfView = 90f;
     public LayerMask LineOfSightLayers;
+    public bool cover=false;
 
-    public delegate void GainSightEvent(PlayerMovement player);
+    public delegate void GainSightEvent(Fire player);
     public GainSightEvent OnGainSight;
-    public delegate void LoseSightEvent(PlayerMovement player);
+    public delegate void LoseSightEvent(Fire player);
     public LoseSightEvent OnLoseSight;
 
     private Coroutine CheckForLineOfSightCoroutine;
-    EnemyLineOfSightChecker script;
-    public FireChecker fireChecker;
-
 
     private void Awake()
     {
-        script = GetComponent<EnemyLineOfSightChecker>();
         Collider = GetComponent<SphereCollider>();
     }
-    private void Update()
-    {
-        if (fireChecker.cover==true) { script.enabled = false; }
-        else { script.enabled = true; }
-        
-    }
+
     private void OnTriggerEnter(Collider other)
     {
-        PlayerMovement player;
-        if (other.TryGetComponent<PlayerMovement>(out player))
+        Fire player;
+        if (other.TryGetComponent<Fire>(out player))
         {
             if (!CheckLineOfSight(player))
             {
+                Debug.Log(" i can see Fire");
+                cover = true;
                 CheckForLineOfSightCoroutine = StartCoroutine(CheckForLineOfSight(player));
             }
         }
@@ -44,18 +38,19 @@ public class EnemyLineOfSightChecker : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        PlayerMovement player;
-        if (other.TryGetComponent<PlayerMovement>(out player))
+        Fire player;
+        if (other.TryGetComponent<Fire>(out player))
         {
             OnLoseSight?.Invoke(player);
             if (CheckForLineOfSightCoroutine != null)
             {
+                cover = false;
                 StopCoroutine(CheckForLineOfSightCoroutine);
             }
         }
     }
 
-    private bool CheckLineOfSight(PlayerMovement player)
+    private bool CheckLineOfSight(Fire player)
     {
         Vector3 Direction = (player.transform.position - transform.position).normalized;
         float DotProduct = Vector3.Dot(transform.forward, Direction);
@@ -65,7 +60,7 @@ public class EnemyLineOfSightChecker : MonoBehaviour
 
             if (Physics.Raycast(transform.position, Direction, out Hit, Collider.radius, LineOfSightLayers))
             {
-                if (Hit.transform.GetComponent<PlayerMovement>() != null)
+                if (Hit.transform.GetComponent<Fire>() != null)
                 {
                     OnGainSight?.Invoke(player);
                     return true;
@@ -76,7 +71,7 @@ public class EnemyLineOfSightChecker : MonoBehaviour
         return false;
     }
 
-    private IEnumerator CheckForLineOfSight(PlayerMovement player)
+    private IEnumerator CheckForLineOfSight(Fire player)
     {
         WaitForSeconds Wait = new WaitForSeconds(0.1f);
 
