@@ -84,20 +84,32 @@ public class Enemyki : MonoBehaviour
     }
 
     public void TakeDamage(){
-        currentHealth = currentHealth-10;
-        healthBar.SetHealth(currentHealth);
+        if (!isDefeated)
+        {
+            if (currentHealth <= 0)
+            {
 
-        if(currentHealth <= 0){
-            if(!isDefeated){
                 isDefeated = true;
                 anim.SetBool("defeated", true);
-                StartCoroutine(DeathAnimation());            }
+                StartCoroutine(DeathAnimation());
+            }
+            else {
+                anim.SetBool("gethit", true);
+                currentHealth = currentHealth - 10;
+                healthBar.SetHealth(currentHealth);
+            }
         }
+       
+            
+        
+       
+
+    
         
     }
 
     IEnumerator DeathAnimation(){
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(4f);
         Destroy(gameObject, 1f);
     }
 
