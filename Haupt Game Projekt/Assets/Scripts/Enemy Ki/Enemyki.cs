@@ -88,7 +88,7 @@ public class Enemyki : MonoBehaviour
         {
             if (currentHealth <= 0)
             {
-
+                ScoreScript.scoreValue += 10;
                 isDefeated = true;
                 anim.SetBool("defeated", true);
                 StartCoroutine(DeathAnimation());
@@ -109,7 +109,7 @@ public class Enemyki : MonoBehaviour
     }
 
     IEnumerator DeathAnimation(){
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(2f);
         Destroy(gameObject, 1f);
     }
 
