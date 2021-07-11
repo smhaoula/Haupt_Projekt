@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -5,64 +6,62 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider))]
 public class FireChecker : MonoBehaviour
 {
-    public SphereCollider Collider;
-    public float FieldOfView = 90f;
-    public LayerMask LineOfSightLayers;
-    public bool cover=false;
+    private SphereCollider fireCollider;
+   [SerializeField] private float FieldOfView = 360f;
+   [SerializeField] private LayerMask LineOfSightLayers;
 
-    public delegate void GainSightEvent(Fire player);
-    public GainSightEvent OnGainSight;
-    public delegate void LoseSightEvent(Fire player);
-    public LoseSightEvent OnLoseSight;
+    private const String Fire = "Fire";
+   
+    public SignEvent OnGainSight;
+    public delegate void SignEvent();
+    public SignEvent OnLoseSight;
 
     private Coroutine CheckForLineOfSightCoroutine;
+    public Action<bool> onCoverChange;
 
     private void Awake()
     {
-        Collider = GetComponent<SphereCollider>();
+        fireCollider = GetComponent<SphereCollider>();  
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Fire player;
-        if (other.TryGetComponent<Fire>(out player))
+        if (other.gameObject.CompareTag(Fire))
         {
-            if (!CheckLineOfSight(player))
+            if (!CheckLineOfSight(other.transform))
             {
-                Debug.Log(" i can see Fire");
-                cover = true;
-                CheckForLineOfSightCoroutine = StartCoroutine(CheckForLineOfSight(player));
+                Debug.Log(" i can see Fire");   
+                onCoverChange?.Invoke(true);
+                CheckForLineOfSightCoroutine = StartCoroutine(CheckForLineOfSight(other.transform));
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Fire player;
-        if (other.TryGetComponent<Fire>(out player))
+        if (other.gameObject.CompareTag( Fire))
         {
-            OnLoseSight?.Invoke(player);
+            OnLoseSight?.Invoke();
             if (CheckForLineOfSightCoroutine != null)
-            {
-                cover = false;
+            {  
+                onCoverChange?.Invoke(false);
                 StopCoroutine(CheckForLineOfSightCoroutine);
             }
         }
     }
 
-    private bool CheckLineOfSight(Fire player)
+    private bool CheckLineOfSight(Transform fire)
     {
-        Vector3 Direction = (player.transform.position - transform.position).normalized;
-        float DotProduct = Vector3.Dot(transform.forward, Direction);
-        if (DotProduct >= Mathf.Cos(FieldOfView))
-        {
-            RaycastHit Hit;
+        Vector3 myPosition = transform.position + Vector3.up * 1;
+        Vector3 Direction = (fire.position - myPosition).normalized;
 
-            if (Physics.Raycast(transform.position, Direction, out Hit, Collider.radius, LineOfSightLayers))
+        if (Vector3.Angle(transform.forward, Direction) < FieldOfView / 2)
+        {
+            if (Physics.Raycast(myPosition, Direction, out RaycastHit Hit, fireCollider.radius, LineOfSightLayers))
             {
-                if (Hit.transform.GetComponent<Fire>() != null)
+                if (Hit.transform.CompareTag(Fire))
                 {
-                    OnGainSight?.Invoke(player);
+                    OnGainSight?.Invoke();
                     return true;
                 }
             }
@@ -71,11 +70,11 @@ public class FireChecker : MonoBehaviour
         return false;
     }
 
-    private IEnumerator CheckForLineOfSight(Fire player)
+    private IEnumerator CheckForLineOfSight(Transform fire)
     {
         WaitForSeconds Wait = new WaitForSeconds(0.1f);
 
-        while (!CheckLineOfSight(player))
+        while (!CheckLineOfSight(fire))
         {
             yield return Wait;
         }

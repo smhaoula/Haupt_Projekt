@@ -83,13 +83,33 @@ public class EndlessTerrain : MonoBehaviour
                 obj.Value
             }
         }*/
-        
-        //for (int i = 0; i < Surfaces.Length; i++)
-        //{
-          //Surfaces[i].BuildNavMesh();
-        //}
+        Surfaces = mapgenarator.GetComponentsInChildren<NavMeshSurface>();
+       
+        for (int i = 0; i < Surfaces.Length; i++)
+        {
+            if(Surfaces[i].navMeshData == null)
+            {
+                BuildNavMeshAsync(Surfaces[i]);
+            }         
+        }
+    }
+    public static AsyncOperation BuildNavMeshAsync(NavMeshSurface surface)
+    {
+        surface.RemoveData();
+        surface.navMeshData = new NavMeshData(surface.agentTypeID)
+        {
+            name = surface.gameObject.name,
+            position = surface.transform.position,
+            rotation = surface.transform.rotation
+        };
+
+        if (surface.isActiveAndEnabled)
+            surface.AddData();
+
+        return surface.UpdateNavMesh(surface.navMeshData);
     }
 
+  
 
     public class TerrainChunk{
         GameObject _village;
@@ -152,7 +172,7 @@ public class EndlessTerrain : MonoBehaviour
             meshRenderer = meshObject.AddComponent<MeshRenderer>();
             meshFilter = meshObject.AddComponent<MeshFilter>();
             meshCollider = meshObject.AddComponent<MeshCollider>();
-            
+            meshObject.AddComponent<NavMeshSurface>();
             meshRenderer.material = material;
 
             meshObject.transform.position = positionV3 * mapGenerator.terrainData.uniformScale;
@@ -168,6 +188,7 @@ public class EndlessTerrain : MonoBehaviour
                 }
             }
             mapGenerator.RequestMapData(position, OnMapDataReceived);
+
         }
 
         public void SpawnTrees(){

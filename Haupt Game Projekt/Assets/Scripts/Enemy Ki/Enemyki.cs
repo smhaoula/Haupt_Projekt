@@ -66,7 +66,7 @@ public class Enemyki : MonoBehaviour
 
         OnStateChange += HandleStateChange;
 
-        LineOfSightChecker.OnGainSight += HandleGainSight;
+        LineOfSightChecker.onGainSight += HandleGainSight;
         LineOfSightChecker.OnLoseSight += HandleLoseSight;
 
         fireChecker.OnGainSight += HandleFireSight;
@@ -111,21 +111,21 @@ public class Enemyki : MonoBehaviour
         Destroy(gameObject, 1f);
     }
 
-    private void HandleFireSight(Fire player)
+    private void HandleFireSight()
     {
         State = EnemyState.Idle;
     }
 
-    private void HandleLoseFireSight(Fire player)
+    private void HandleLoseFireSight()
     {
         State = DefaultState;
     }
-    private void HandleGainSight(PlayerMovement player)
+    private void HandleGainSight()
     {
         State = EnemyState.Chase;
     }
 
-    private void HandleLoseSight(PlayerMovement player)
+    private void HandleLoseSight()
     {
         State = DefaultState;
     }

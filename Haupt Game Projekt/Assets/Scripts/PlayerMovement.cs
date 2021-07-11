@@ -107,7 +107,7 @@ public class PlayerMovement : MonoBehaviour , IDamageable
     }
 
     void OnCollisionEnter(Collision collision){
-        if(collision.gameObject.tag.Equals("EnemyCollider")){
+        if(collision.gameObject.CompareTag("EnemyCollider")){
             currentHealth = currentHealth-10;
             healthBar.SetHealth(currentHealth);
         }

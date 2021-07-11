@@ -9,48 +9,55 @@ public class EnemyLineOfSightChecker : MonoBehaviour
     public float FieldOfView = 90f;
     public LayerMask LineOfSightLayers;
 
-    public delegate void GainSightEvent(PlayerMovement player);
-    public GainSightEvent OnGainSight;
-    public delegate void LoseSightEvent(PlayerMovement player);
-    public LoseSightEvent OnLoseSight;
+
+    public SignEvent onGainSight;
+    public delegate void SignEvent();
+    public SignEvent OnLoseSight;
 
     private Coroutine CheckForLineOfSightCoroutine;
-    EnemyLineOfSightChecker script;
+   
     public FireChecker fireChecker;
+    private bool isactive;
 
 
     private void Awake()
     {
-        script = GetComponent<EnemyLineOfSightChecker>();
+        fireChecker.onCoverChange += setbool;
         Collider = GetComponent<SphereCollider>();
     }
-    private void Update()
-    {
-        if (fireChecker.cover==true) { script.enabled = false; }
-        else { script.enabled = true; }
-        
+
+   
+    void setbool(bool var) {
+        isactive = !var;
     }
+    
     private void OnTriggerEnter(Collider other)
     {
-        PlayerMovement player;
-        if (other.TryGetComponent<PlayerMovement>(out player))
+        if (isactive)
         {
-            if (!CheckLineOfSight(player))
+            PlayerMovement player;
+            if (other.TryGetComponent<PlayerMovement>(out player))
             {
-                CheckForLineOfSightCoroutine = StartCoroutine(CheckForLineOfSight(player));
+                if (!CheckLineOfSight(player))
+                {
+                    CheckForLineOfSightCoroutine = StartCoroutine(CheckForLineOfSight(player));
+                }
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        PlayerMovement player;
-        if (other.TryGetComponent<PlayerMovement>(out player))
+        if (isactive)
         {
-            OnLoseSight?.Invoke(player);
-            if (CheckForLineOfSightCoroutine != null)
+            PlayerMovement player;
+            if (other.TryGetComponent<PlayerMovement>(out player))
             {
-                StopCoroutine(CheckForLineOfSightCoroutine);
+                OnLoseSight?.Invoke();
+                if (CheckForLineOfSightCoroutine != null)
+                {
+                    StopCoroutine(CheckForLineOfSightCoroutine);
+                }
             }
         }
     }
@@ -67,7 +74,7 @@ public class EnemyLineOfSightChecker : MonoBehaviour
             {
                 if (Hit.transform.GetComponent<PlayerMovement>() != null)
                 {
-                    OnGainSight?.Invoke(player);
+                    onGainSight?.Invoke();
                     return true;
                 }
             }
