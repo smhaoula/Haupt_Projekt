@@ -99,11 +99,19 @@ public class Enemyki : MonoBehaviour
             }
             else {
                 anim.SetBool("gethit", true);
+                StartCoroutine(HitAnimation());
+
                 currentHealth = currentHealth - 10;
                 healthBar.SetHealth(currentHealth);
             }
         }
         
+    }
+    IEnumerator HitAnimation()
+    {
+        yield return new WaitForSeconds(0.5f);
+        anim.SetBool("gethit", false);
+
     }
 
     IEnumerator DeathAnimation(){
@@ -208,7 +216,7 @@ public class Enemyki : MonoBehaviour
                 }
                 else {
                    Agent.isStopped = true;
-
+                   
                     anim.SetBool("isattacking", true); }
                    
                 
