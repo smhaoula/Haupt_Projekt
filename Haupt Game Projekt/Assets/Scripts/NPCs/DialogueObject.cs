@@ -9,13 +9,14 @@ public class DialogueOBJ
 {
     public string[] Dialogues;
     public string CharacterName;
-    public int questNumber;
 }
 
 public class DialogueObject : MonoBehaviour
 {
 
     public PlayerData data;
+
+    private QuestObj obj;
 
     private DialogueOBJ currDialogue=null;
     private int currentDialogueNum;
@@ -30,6 +31,11 @@ public class DialogueObject : MonoBehaviour
 
     [Header("NPCs")]
     public NPC1 nPC1;
+
+    void Awake()
+    {
+        obj = FindObjectOfType<QuestObj>();
+    }
 
     public void OnEnable()
     {
@@ -59,6 +65,7 @@ public class DialogueObject : MonoBehaviour
                 case 1:
                     nPC1.hasTalked=true;
                     nPC1.isInDialogue=false;
+                    obj.StartNewQuest(obj.questObjs[0]);
                     break;
                 case 1.5f:
                     nPC1.isInDialogue=false;
@@ -66,11 +73,7 @@ public class DialogueObject : MonoBehaviour
             }
             currentDialogueNum = 0;
             data.DialogueNumber = 0;
-            data.questNumber = currDialogue.questNumber;
             currDialogue = null;
-            
-
-
             this.gameObject.SetActive(false);
         }
 

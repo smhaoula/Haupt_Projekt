@@ -78,11 +78,6 @@ public class EndlessTerrain : MonoBehaviour
             }
 
         }
-        /*foreach(KeyValuePair<Vector2, TerrainChunk> obj in terrainChunkDictionary){
-            if(!obj.Value.generatedNavmesh){
-                obj.Value
-            }
-        }*/
         Surfaces = mapgenarator.GetComponentsInChildren<NavMeshSurface>();
        
         for (int i = 0; i < Surfaces.Length; i++)
@@ -153,22 +148,15 @@ public class EndlessTerrain : MonoBehaviour
             generatedNavmesh = false;
             this.detailLevels = detailLevels;
             position = coord * size;
-            //Debug.Log(position);
-            
             
             terrainSize = Mathf.RoundToInt(size*mapGenerator.terrainData.uniformScale);
-            //terrainSize = size;
             bounds = new Bounds(position,Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
 
             startOfChunkPosition.x = bounds.center.x - size/2;
             startOfChunkPosition.y = bounds.center.z - size/2;
             startOfChunkPosition = startOfChunkPosition* mapGenerator.terrainData.uniformScale;
-            //startOfChunkPosition.x = position.x - size/2;
-            //startOfChunkPosition.y = position.y - size/2;
-
-            //Debug.DrawRay(new Vector3(position.x, 100, position.y), Vector3.down*200, Color.red, 20f);
-            //Debug.DrawRay(new Vector3(bounds.center.x, 100, bounds.center.y), Vector3.down*200, Color.red, 20f);
+            
             Debug.DrawRay(new Vector3(startOfChunkPosition.x, 100, startOfChunkPosition.y), Vector3.down*200, Color.red, 20f);
             //Debug.Log(startOfChunkPosition);
 
@@ -200,14 +188,11 @@ public class EndlessTerrain : MonoBehaviour
         public void SpawnTrees(){
             float minTreeHeight = textureData.layers[1].startHeight * mapGenerator.noiseData.noiseScale;
             float maxTreeHeight = textureData.layers[4].startHeight * mapGenerator.noiseData.noiseScale;
-            int treeCount = 20;
+            int treeCount = 35;
             int layerMask = LayerMask.GetMask("Terrain");
             for(int i = 0; i < treeCount; i++){
-                //Debug.Log(position);
                 float posX = Random.Range(startOfChunkPosition.x, startOfChunkPosition.x + terrainSize);
-                //Debug.Log( posX);
                 float posZ = Random.Range(startOfChunkPosition.y, startOfChunkPosition.y + terrainSize);
-                //Debug.Log(posZ);
                
                 RaycastHit hit = new RaycastHit();
                 var p = new Vector3(posX, 100, posZ);
@@ -215,7 +200,6 @@ public class EndlessTerrain : MonoBehaviour
                 //Debug.DrawRay(p, Vector3.down*200, Color.red, 20f);
                 if(Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)){
                     float posY = hit.point.y;
-                    //Debug.Log(posY);
                     if(posY >= minTreeHeight && posY <= maxTreeHeight){
                         Vector3 spawnPos = new Vector3(posX, posY, posZ);
 
@@ -271,19 +255,14 @@ public class EndlessTerrain : MonoBehaviour
             int layerMask = LayerMask.GetMask("Terrain");
 
             for(int i = 0; i < grassCount; i++){
-                //Debug.Log(position);
                 float posX = Random.Range(startOfChunkPosition.x, startOfChunkPosition.x + terrainSize);
-                //Debug.Log( posX);
                 float posZ = Random.Range(startOfChunkPosition.y, startOfChunkPosition.y + terrainSize);
-                //Debug.Log(posZ);
                
                 RaycastHit hit = new RaycastHit();
                 var p = new Vector3(posX, 100, posZ);
                 Ray ray = new Ray(p, Vector3.down*200);
-                //Debug.DrawRay(p, Vector3.down*200, Color.red, 20f);
                 if(Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)){
                     float posY = hit.point.y;
-                    //Debug.Log(posY);
                     if(posY >= minGrassHeight && posY <= maxGrassHeight){
                         Vector3 spawnPos = new Vector3(posX, posY, posZ);
                         GameObject t = Instantiate(_grass, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
@@ -301,19 +280,14 @@ public class EndlessTerrain : MonoBehaviour
             int layerMask = LayerMask.GetMask("Terrain");
 
             for(int i = 0; i < spawnCount; i++){
-                //Debug.Log(position);
                 float posX = Random.Range(startOfChunkPosition.x, startOfChunkPosition.x + terrainSize);
-                //Debug.Log( posX);
                 float posZ = Random.Range(startOfChunkPosition.y, startOfChunkPosition.y + terrainSize);
-                //Debug.Log(posZ);
                
                 RaycastHit hit = new RaycastHit();
                 var p = new Vector3(posX, 100, posZ);
                 Ray ray = new Ray(p, Vector3.down*200);
-                //Debug.DrawRay(p, Vector3.down*200, Color.red, 20f);
                 if(Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)){
                     float posY = hit.point.y;
-                    //Debug.Log(posY);
                     if(posY >= minSpawnHeight && posY <= maxSpawnHeight){
                         Vector3 spawnPos = new Vector3(posX, posY, posZ);
                         GameObject t = Instantiate(prefab, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
@@ -330,11 +304,8 @@ public class EndlessTerrain : MonoBehaviour
             int villageCount = 1;
 
             for(int i = 0; i < villageCount; i++){
-                //Debug.Log(position);
                 float posX = Random.Range(startOfChunkPosition.x, startOfChunkPosition.x + terrainSize);
-                //Debug.Log( posX);
                 float posZ = Random.Range(startOfChunkPosition.y, startOfChunkPosition.y + terrainSize);
-                //Debug.Log(posZ);
                
                 RaycastHit hit = new RaycastHit();
                 var p = new Vector3(posX, 100, posZ);
@@ -407,7 +378,7 @@ public class EndlessTerrain : MonoBehaviour
                             //Debug.Log(startOfChunkPosition);
                             //Debug.Log(spawnedObjects.Count);
 
-                            if(spawnedObjects.Count == 0){
+                            /*if(spawnedObjects.Count == 0){
                                 if(SpawnVillage()){
                                     generatedNature = true;
                                 }
@@ -415,7 +386,7 @@ public class EndlessTerrain : MonoBehaviour
                                 SpawnGrass();
                                 SpawnNature(_pine, 20, 4,5);
                                 SpawnNature(_rock, 10, 4,5);
-                            }
+                            }*/
                         
                         
                         }
@@ -428,6 +399,17 @@ public class EndlessTerrain : MonoBehaviour
                     terrainChunksVisibleLastUpdate.Add(this);
                 }
                 SetVisible(visible);
+                if(meshCollider.sharedMesh != null && this.spawnedObjects.Count ==0){
+                    if(spawnedObjects.Count == 0){
+                                //SpawnVillage();
+                                //SpawnTrees();
+                                SpawnNature(_village, 3, 2,3);
+                                SpawnNature(_tree, 40, 1, 4);
+                                SpawnNature(_grass, 70, 1,3);
+                                SpawnNature(_pine, 40, 4,5);
+                                SpawnNature(_rock, 30, 4,5);
+                            }
+                }
             }
         }
 
