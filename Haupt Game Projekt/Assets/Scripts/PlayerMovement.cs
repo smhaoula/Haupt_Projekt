@@ -22,9 +22,11 @@ public class PlayerMovement : MonoBehaviour , IDamageable
     public int currentHealth;
 
     public HealthBar healthBar;
+    float _timeColliding;
+     public float timeThreshold = 2f;
 
     void Awake() => _animator = GetComponent<Animator>();
-    
+
     void Start()
     {
         gameObject.tag = "Player";
@@ -33,63 +35,11 @@ public class PlayerMovement : MonoBehaviour , IDamageable
     }
 
     void Update(){
-        /*float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-
-        direction = new Vector3(horizontal, 0f, vertical).normalized;
-        
-        //Animation
-        float velocityZ = Vector3.Dot(direction, transform.forward);
-        float velocityX = Vector3.Dot(direction, transform.right);
-
-        _animator.SetFloat("VelocityZ", velocityZ, 0.1f, Time.deltaTime);
-        _animator.SetFloat("VelocityX", velocityX, 0.1f, Time.deltaTime);
-*/
-        
-
-        if(Input.GetMouseButtonDown(0)){
-            fight = true;
-             _animator.SetBool("Fight", fight);
-            StartCoroutine(FightAnimation());
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
-            foreach (Collider hitCollider in hitColliders)
-            {
-                Debug.Log(hitCollider.tag);
-                
-                if(hitCollider.gameObject.tag.Equals("EnemyCollider")){
-                    GameObject parentObject = hitCollider.transform.parent.gameObject;
-                    parentObject.GetComponent<Enemyki>().TakeDamage();
-                }
-            }
-        }
-
-        if(Input.GetMouseButtonDown(1)){
-            roll = true;
-            _animator.SetBool("Roll", roll);
-            StartCoroutine(RollAnimation());
-
-        }
-        
-    }
-
-    IEnumerator FightAnimation(){
-        yield return new WaitForSeconds(0.5f);
-        fight = false;
-         _animator.SetBool("Fight", fight);
-    }
-
-    IEnumerator RollAnimation(){
-        yield return new WaitForSeconds(0.5f);
-        roll = false;
-         _animator.SetBool("Roll", roll);
-    }
-
-    void FixedUpdate(){
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
         direction = new Vector3(horizontal, 0f, vertical).normalized;
-        
+
         //Animation
         float velocityZ = Vector3.Dot(direction, transform.forward);
         float velocityX = Vector3.Dot(direction, transform.right);
@@ -107,12 +57,63 @@ public class PlayerMovement : MonoBehaviour , IDamageable
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f)* Vector3.forward;
             controller.Move(moveDir.normalized*speed*Time.deltaTime);
         }
+
+
+        if(Input.GetMouseButtonDown(0)){
+            fight = true;
+             _animator.SetBool("Fight", fight);
+            StartCoroutine(FightAnimation());
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
+            foreach (Collider hitCollider in hitColliders)
+            {
+                //Debug.Log(hitCollider.tag);
+
+                if(hitCollider.gameObject.tag.Equals("EnemyCollider")){
+                    GameObject parentObject = hitCollider.transform.parent.gameObject;
+                    parentObject.GetComponent<Enemyki>().TakeDamage();
+                }
+            }
+        }
+
+        if(Input.GetMouseButtonDown(1)){
+            roll = true;
+            _animator.SetBool("Roll", roll);
+            StartCoroutine(RollAnimation());
+
+        }
+
     }
 
-    void OnCollisionEnter(Collision collision){
+    IEnumerator FightAnimation(){
+        yield return new WaitForSeconds(0.5f);
+        fight = false;
+         _animator.SetBool("Fight", fight);
+    }
+
+    IEnumerator RollAnimation(){
+        yield return new WaitForSeconds(0.5f);
+        roll = false;
+         _animator.SetBool("Roll", roll);
+    }
+
+    void OnCollisionEnter(Collision collision) {
+         if (collision.gameObject.tag == "EnemyCollider") {
+             _timeColliding = 0f;
+             TakeDamage(10);
+         }
+    }
+
+    void OnCollisionStay(Collision collision){
         if(collision.gameObject.CompareTag("EnemyCollider")){
-            currentHealth = currentHealth-10;
-            healthBar.SetHealth(currentHealth);
+            if (_timeColliding < timeThreshold) {
+                 _timeColliding += Time.deltaTime;
+             } else {
+                 // Time is over theshold, player takes damage
+                 TakeDamage(10);
+                 // Reset timer
+                 _timeColliding = 0f;
+             }
+
         }
     }
 
