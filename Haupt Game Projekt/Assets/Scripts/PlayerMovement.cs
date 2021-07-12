@@ -119,9 +119,10 @@ public class PlayerMovement : MonoBehaviour , IDamageable
 
     public void TakeDamage(int Damage)
     {
-        Health -= Damage;
+        currentHealth -= Damage;
+        healthBar.SetHealth(currentHealth);
 
-        if (Health <= 0)
+        if (currentHealth <= 0)
         {
             GameOver();
             gameObject.SetActive(false);
