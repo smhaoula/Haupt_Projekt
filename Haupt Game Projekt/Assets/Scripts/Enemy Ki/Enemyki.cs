@@ -98,11 +98,18 @@ public class Enemyki : MonoBehaviour
                 StartCoroutine(DeathAnimation());
             }
             else {
+
                 anim.SetBool("gethit", true);
                 StartCoroutine(HitAnimation());
 
                 currentHealth = currentHealth - 10;
                 healthBar.SetHealth(currentHealth);
+                if (currentHealth <= currentHealth / 2) {
+                    HandleHealthSight();
+                   
+                
+                
+                }
             }
         }
         
@@ -119,6 +126,15 @@ public class Enemyki : MonoBehaviour
         Destroy(gameObject, 1f);
     }
 
+    private void HandleHealthSight()
+    {
+        State = EnemyState.Patrol;
+    }
+
+    private void HandleLoseHealthSight()
+    {
+        State = DefaultState;
+    }
     private void HandleFireSight()
     {
         State = EnemyState.Idle;
