@@ -6,15 +6,29 @@ public class NPC1 : MonoBehaviour
 {
     public GameObject triggerText;
     public GameObject DialogueObject;
+    public bool hasTalked = false;
+    public bool isInDialogue = false;
     private void OnTriggerStay(Collider other)
     {
      
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" && !isInDialogue)
         {
             triggerText.SetActive(true);
             if (Input.GetKeyDown(KeyCode.E)) {
-                other.gameObject.GetComponent<PlayerData>().DialogueNumber = 1;
-                DialogueObject.SetActive(true);
+                isInDialogue = true;
+
+                if(!hasTalked)
+                {
+                    other.gameObject.GetComponent<PlayerData>().DialogueNumber = 1;
+                    DialogueObject.SetActive(true);
+                    triggerText.SetActive(false);
+                }
+                else{
+                    other.gameObject.GetComponent<PlayerData>().DialogueNumber = 1.5f;
+                    DialogueObject.SetActive(true);
+                    triggerText.SetActive(false);
+                }
+                
             }
         }
     }

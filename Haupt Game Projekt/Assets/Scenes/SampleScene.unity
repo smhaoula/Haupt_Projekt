@@ -2847,7 +2847,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.349892, y: 1}
+    m_SensorSize: {x: 1.5524626, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2918,6 +2918,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerText: {fileID: 1157592676}
   DialogueObject: {fileID: 1277813714}
+  hasTalked: 0
+  isInDialogue: 0
 --- !u!65 &886462329
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4203,6 +4205,11 @@ MonoBehaviour:
     - how are u
     CharacterName: jupi
     questNumber: 1
+  Dialogue1o5:
+    Dialogues: []
+    CharacterName: 
+    questNumber: 0
+  nPC1: {fileID: 0}
 --- !u!1 &1283771202
 GameObject:
   m_ObjectHideFlags: 0

@@ -112,6 +112,7 @@ public class EndlessTerrain : MonoBehaviour
   
 
     public class TerrainChunk{
+        public List<GameObject> spawnedObjects;
         GameObject _village;
         GameObject _nature;
         GameObject _grass;
@@ -140,6 +141,7 @@ public class EndlessTerrain : MonoBehaviour
         int terrainSize;
 
         public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom){
+            spawnedObjects = new List<GameObject>();
             _village = village;
             _nature = nature;
             _tree = tree;
@@ -165,7 +167,11 @@ public class EndlessTerrain : MonoBehaviour
             //startOfChunkPosition.x = position.x - size/2;
             //startOfChunkPosition.y = position.y - size/2;
 
-            Debug.DrawRay(new Vector3(position.x, 100, position.y), Vector3.down*200, Color.red, 20f);
+            //Debug.DrawRay(new Vector3(position.x, 100, position.y), Vector3.down*200, Color.red, 20f);
+            //Debug.DrawRay(new Vector3(bounds.center.x, 100, bounds.center.y), Vector3.down*200, Color.red, 20f);
+            Debug.DrawRay(new Vector3(startOfChunkPosition.x, 100, startOfChunkPosition.y), Vector3.down*200, Color.red, 20f);
+            //Debug.Log(startOfChunkPosition);
+
 
             meshObject = new GameObject("Terrain Chunk");
             meshObject.layer = 6;
@@ -221,8 +227,9 @@ public class EndlessTerrain : MonoBehaviour
                                 break;
                             }
                             else{
-                                Debug.Log("Baum platziert");
-                                GameObject t = Instantiate(_tree, spawnPos, Quaternion.Euler(0,0,0));
+                                //Debug.Log("Baum platziert");
+                                GameObject t = Instantiate(_tree, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
+                                spawnedObjects.Add(t);
                                 t.transform.parent = _nature.transform;
 
                                 for(int y = 0; y < 5; y++){
@@ -236,7 +243,8 @@ public class EndlessTerrain : MonoBehaviour
                                         float posGrassY = hit.point.y;
                                         if(posGrassY >= minTreeHeight && posGrassY <= maxTreeHeight){
                                             Vector3 grassSpawnPos = new Vector3(spawnPos.x + offset1, posGrassY, spawnPos.z + offset2);
-                                            GameObject g = Instantiate(_grass, grassSpawnPos, Quaternion.Euler(0,0,0));
+                                            GameObject g = Instantiate(_grass, grassSpawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
+                                            spawnedObjects.Add(g);
                                             g.transform.parent = _nature.transform;
                                         }
                                     }
@@ -249,6 +257,8 @@ public class EndlessTerrain : MonoBehaviour
                 }
                 else
                 {
+                    //Debug.Log(startOfChunkPosition);
+                    //Debug.Log(spawnedObjects.Count);
                     //Debug.Log("Raycast fehlgeschlagen");
                 }
             }
@@ -276,8 +286,8 @@ public class EndlessTerrain : MonoBehaviour
                     //Debug.Log(posY);
                     if(posY >= minGrassHeight && posY <= maxGrassHeight){
                         Vector3 spawnPos = new Vector3(posX, posY, posZ);
-                        GameObject t = Instantiate(_grass, spawnPos, Quaternion.Euler(0,0,0));
-                        
+                        GameObject t = Instantiate(_grass, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
+                        spawnedObjects.Add(t);
                         t.transform.parent = _nature.transform;
                     }
                 }
@@ -306,8 +316,8 @@ public class EndlessTerrain : MonoBehaviour
                     //Debug.Log(posY);
                     if(posY >= minSpawnHeight && posY <= maxSpawnHeight){
                         Vector3 spawnPos = new Vector3(posX, posY, posZ);
-                        GameObject t = Instantiate(prefab, spawnPos, Quaternion.Euler(0,0,0));
-                        
+                        GameObject t = Instantiate(prefab, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
+                        spawnedObjects.Add(t);
                         t.transform.parent = _nature.transform;
                     }
                 }
@@ -336,7 +346,7 @@ public class EndlessTerrain : MonoBehaviour
                     if(posY >= minVillageHeight && posY <= maxVillageHeight){
                         Vector3 spawnPos = new Vector3(posX, posY, posZ);
                         GameObject t = Instantiate(_village, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
-                        
+                        spawnedObjects.Add(t);
                         t.transform.parent = _nature.transform;
                     }
                 }
@@ -373,6 +383,16 @@ public class EndlessTerrain : MonoBehaviour
                         if(lODMesh.hasMesh){
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lODMesh.mesh;
+
+                            /*if(spawnedObjects.Count == 0){
+                                if(SpawnVillage()){
+                                    generatedNature = true;
+                                }
+                                SpawnTrees();
+                                SpawnGrass();
+                                SpawnNature(_pine, 20, 4,5);
+                                SpawnNature(_rock, 10, 4,5);
+                            }*/
                             
                         }
                         else if(!lODMesh.hasRequestedMesh){
@@ -384,9 +404,10 @@ public class EndlessTerrain : MonoBehaviour
                         if(collisionLODMesh.hasMesh){
                             meshCollider.sharedMesh = collisionLODMesh.mesh;
                             
-                            
-                            
-                            if(!generatedNature){
+                            //Debug.Log(startOfChunkPosition);
+                            //Debug.Log(spawnedObjects.Count);
+
+                            if(spawnedObjects.Count == 0){
                                 if(SpawnVillage()){
                                     generatedNature = true;
                                 }
@@ -412,6 +433,10 @@ public class EndlessTerrain : MonoBehaviour
 
         public void SetVisible(bool visible){
             meshObject.SetActive(visible);
+            foreach (GameObject item in spawnedObjects)
+            {
+                item.SetActive(visible);
+            }
         }
 
         public bool IsVisible(){

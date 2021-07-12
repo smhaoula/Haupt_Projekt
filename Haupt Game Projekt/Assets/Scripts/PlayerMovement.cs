@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour , IDamageable
     }
 
     void Update(){
-        /*float horizontal = Input.GetAxisRaw("Horizontal");
+        float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
         direction = new Vector3(horizontal, 0f, vertical).normalized;
@@ -38,10 +38,20 @@ public class PlayerMovement : MonoBehaviour , IDamageable
         //Animation
         float velocityZ = Vector3.Dot(direction, transform.forward);
         float velocityX = Vector3.Dot(direction, transform.right);
-
+        
         _animator.SetFloat("VelocityZ", velocityZ, 0.1f, Time.deltaTime);
         _animator.SetFloat("VelocityX", velocityX, 0.1f, Time.deltaTime);
-*/
+
+
+        if(direction.magnitude >= 0.1f){
+
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocitiy, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f)* Vector3.forward;
+            controller.Move(moveDir.normalized*speed*Time.deltaTime);
+        }
         
 
         if(Input.GetMouseButtonDown(0)){
@@ -51,7 +61,7 @@ public class PlayerMovement : MonoBehaviour , IDamageable
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
             foreach (Collider hitCollider in hitColliders)
             {
-                Debug.Log(hitCollider.tag);
+                //Debug.Log(hitCollider.tag);
                 
                 if(hitCollider.gameObject.tag.Equals("EnemyCollider")){
                     GameObject parentObject = hitCollider.transform.parent.gameObject;
@@ -79,31 +89,6 @@ public class PlayerMovement : MonoBehaviour , IDamageable
         yield return new WaitForSeconds(0.5f);
         roll = false;
          _animator.SetBool("Roll", roll);
-    }
-
-    void FixedUpdate(){
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-
-        direction = new Vector3(horizontal, 0f, vertical).normalized;
-        
-        //Animation
-        float velocityZ = Vector3.Dot(direction, transform.forward);
-        float velocityX = Vector3.Dot(direction, transform.right);
-
-        _animator.SetFloat("VelocityZ", velocityZ, 0.1f, Time.deltaTime);
-        _animator.SetFloat("VelocityX", velocityX, 0.1f, Time.deltaTime);
-
-
-        if(direction.magnitude >= 0.1f){
-
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocitiy, turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f)* Vector3.forward;
-            controller.Move(moveDir.normalized*speed*Time.deltaTime);
-        }
     }
 
     void OnCollisionEnter(Collision collision){
