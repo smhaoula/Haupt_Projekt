@@ -19,6 +19,8 @@ public class PlayerMovement : MonoBehaviour , IDamageable
     public int currentHealth;
 
     public HealthBar healthBar;
+    float _timeColliding;
+     public float timeThreshold = 2f;
 
     void Awake() => _animator = GetComponent<Animator>();
     
@@ -91,21 +93,31 @@ public class PlayerMovement : MonoBehaviour , IDamageable
          _animator.SetBool("Roll", roll);
     }
 
-    void OnCollisionEnter(Collision collision){
+    void OnCollisionEnter(Collision collision) {
+         if (collision.gameObject.tag == "EnemyCollider") {
+             _timeColliding = 0f;
+             TakeDamage(10);
+         }
+    }
+
+    void OnCollisionStay(Collision collision){
         if(collision.gameObject.CompareTag("EnemyCollider")){
-            currentHealth = currentHealth-10;
-            healthBar.SetHealth(currentHealth);
+            if (_timeColliding < timeThreshold) {
+                 _timeColliding += Time.deltaTime;
+             } else {
+                 // Time is over theshold, player takes damage
+                 TakeDamage(10);
+                 // Reset timer
+                 _timeColliding = 0f;
+             }
+            
         }
     }
 
     public void TakeDamage(int Damage)
     {
-        Health -= Damage;
-
-        if (Health <= 0)
-        {
-            gameObject.SetActive(false);
-        }
+        currentHealth = currentHealth-Damage;
+        healthBar.SetHealth(currentHealth);
     }
 
     public Transform GetTransform()

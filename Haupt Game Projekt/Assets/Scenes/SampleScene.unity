@@ -2847,7 +2847,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.5524626, y: 1}
+    m_SensorSize: {x: 1.5603918, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -3947,6 +3947,7 @@ MonoBehaviour:
   Health: 150
   currentHealth: 0
   healthBar: {fileID: 1930244132}
+  timeThreshold: 2.5
 --- !u!54 &1232145959
 Rigidbody:
   m_ObjectHideFlags: 0
