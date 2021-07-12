@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour , IDamageable
 {
     public CharacterController controller;
+    [SerializeField]
+    GameObject Image;
 
     public Transform cam;
      Vector3 direction;
@@ -119,6 +122,7 @@ public class PlayerMovement : MonoBehaviour , IDamageable
 
         if (Health <= 0)
         {
+            GameOver();
             gameObject.SetActive(false);
         }
     }
@@ -126,5 +130,17 @@ public class PlayerMovement : MonoBehaviour , IDamageable
     public Transform GetTransform()
     {
         return transform;
+    }
+
+    public void GameOver()
+    {
+        Image.SetActive(true);
+        StartCoroutine(LoadMenu());
+    }
+    IEnumerator LoadMenu()
+    {
+
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene("1");
     }
 }
