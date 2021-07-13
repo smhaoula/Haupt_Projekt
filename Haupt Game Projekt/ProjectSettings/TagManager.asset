@@ -10,6 +10,7 @@ TagManager:
   - Sword
   - EnemyCollider
   - Fire
+  - SpellBook
   layers:
   - Default
   - TransparentFX

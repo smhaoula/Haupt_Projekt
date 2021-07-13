@@ -23,7 +23,10 @@ public class PlayerMovement : MonoBehaviour , IDamageable
 
     public HealthBar healthBar;
     float _timeColliding;
-     public float timeThreshold = 2f;
+    public float timeThreshold = 2f;
+
+    public GameObject QuestObject;
+    public GameObject pickedUpObject;
 
     void Awake() => _animator = GetComponent<Animator>();
 
@@ -94,6 +97,19 @@ public class PlayerMovement : MonoBehaviour , IDamageable
         yield return new WaitForSeconds(0.5f);
         roll = false;
          _animator.SetBool("Roll", roll);
+    }
+
+    public void StartQuest(GameObject quest)
+    {
+        QuestObject = quest;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        //if(other.gameObject.tag.Equals(QuestObject.tag))
+        //{
+            
+        //}
     }
 
     void OnCollisionEnter(Collision collision) {

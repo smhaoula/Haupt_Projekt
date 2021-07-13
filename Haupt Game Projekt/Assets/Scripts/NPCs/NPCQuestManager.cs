@@ -1,19 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
+[Serializable]
 public class QuestOBJ
 {
     public string[] Dialogues;
     public string CharacterName;
+    public GameObject npc;
 }
 
 public class NPCQuestManager : MonoBehaviour
 {
+    
+    public DialogueBoxManager manager;
     public GameObject triggerText;
-    public GameObject DialogueObject;
+    public GameObject DialogueBox;
     public GameObject questGameObject;
     public Sprite QuestObjectPicture;
+    public string questTitle;
     public bool hasTalked = false;
     public bool isInDialogue = false;
     public string NPCName;
@@ -21,35 +26,76 @@ public class NPCQuestManager : MonoBehaviour
     public QuestOBJ middleDialogue;
     public QuestOBJ endDialogue;
     public QuestOBJ thanksDialogue;
+    public QuestOBJ currentQuest;
     [Range(0,3)]
     public int questPhase;
+    public bool finished;
+
+    
 
     void Start()
     {
-
+        manager = DialogueBox.GetComponent<DialogueBoxManager>();
+        questPhase = 0;
+        currentQuest = startDialogue;
     }
     private void OnTriggerStay(Collider other)
     {
      
         if (other.gameObject.tag == "Player" && !isInDialogue)
         {
+            /*if(other.gameObject.hasBook)
+                {
+                    questPhase = 2;
+                }*/
             triggerText.SetActive(true);
             if (Input.GetKeyDown(KeyCode.E)) {
                 isInDialogue = true;
+                DialogueBox.SetActive(true);
+                triggerText.SetActive(false);
+                
 
-                if(!hasTalked)
+                switch(questPhase)
                 {
-                    other.gameObject.GetComponent<PlayerData>().DialogueNumber = 1;
-                    DialogueObject.SetActive(true);
-                    triggerText.SetActive(false);
+                    case 0:
+                        currentQuest = startDialogue;
+                        DialogueBox.GetComponent<DialogueBoxManager>().playDialogue(currentQuest);
+                        DialogueBox.GetComponent<DialogueBoxManager>().SetQuestTitle(questTitle);
+                        DialogueBox.GetComponent<DialogueBoxManager>().SetQuestImage(QuestObjectPicture);
+                        break;
+                    case 1:
+                        currentQuest = middleDialogue;
+                        DialogueBox.GetComponent<DialogueBoxManager>().playDialogue(currentQuest);
+                        break;
+                    case 2:
+                        currentQuest = endDialogue;
+                        DialogueBox.GetComponent<DialogueBoxManager>().playDialogue(currentQuest);
+                        finished = true;
+                        DialogueBox.GetComponent<DialogueBoxManager>().SetFinishedQuest();
+                        ScoreScript.scoreValue += 20;
+                        break;
+                    case 3: 
+                        currentQuest = thanksDialogue;
+                        DialogueBox.GetComponent<DialogueBoxManager>().playDialogue(currentQuest);
+                        break;
                 }
-                else{
-                    other.gameObject.GetComponent<PlayerData>().DialogueNumber = 1.5f;
-                    DialogueObject.SetActive(true);
-                    triggerText.SetActive(false);
-                }
+
+                
                 
             }
+        }
+    }
+
+    public void ChangeQuestPhase()
+    {
+        
+        if(questPhase == 0)
+        {
+            questPhase++;
+        }
+        if(finished)
+        {
+            questPhase = 3;
         }
     }
 

@@ -14,6 +14,7 @@ public class EndlessTerrain : MonoBehaviour
     public GameObject rock;
     public GameObject pine;
     public GameObject mushroom;
+    public GameObject enemy;
     const float viewerMoveThresholdForChunkUpdate = 25f;
     const float squareViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
     public static float maxViewDst;
@@ -72,7 +73,7 @@ public class EndlessTerrain : MonoBehaviour
                     terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
                 }
                 else{
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, tree, grass, nature, village, pine, rock, mushroom));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, tree, grass, nature, village, pine, rock, mushroom, enemy));
                     
                 }
             }
@@ -113,6 +114,7 @@ public class EndlessTerrain : MonoBehaviour
         GameObject _grass;
         GameObject _pine;
         GameObject _rock;
+        GameObject _enemy;
         GameObject _mushroom;
         public bool generatedNature;
         public bool generatedNavmesh;
@@ -135,7 +137,7 @@ public class EndlessTerrain : MonoBehaviour
         int previousLODIndex = -1;
         int terrainSize;
 
-        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom){
+        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom, GameObject enemy){
             spawnedObjects = new List<GameObject>();
             _village = village;
             _nature = nature;
@@ -143,6 +145,7 @@ public class EndlessTerrain : MonoBehaviour
             _grass = grass;
             _pine = pine;
             _rock = rock;
+            _enemy = enemy;
             _mushroom = mushroom;
             generatedNature = false;
             generatedNavmesh = false;
@@ -158,7 +161,9 @@ public class EndlessTerrain : MonoBehaviour
             startOfChunkPosition = startOfChunkPosition* mapGenerator.terrainData.uniformScale;
             
             Debug.DrawRay(new Vector3(startOfChunkPosition.x, 100, startOfChunkPosition.y), Vector3.down*200, Color.red, 20f);
+            //Debug.Log("Ray wurde gezeichnet");
             //Debug.Log(startOfChunkPosition);
+            //Debug.Log(coord);
 
 
             meshObject = new GameObject("Terrain Chunk");
@@ -408,6 +413,7 @@ public class EndlessTerrain : MonoBehaviour
                                 SpawnNature(_grass, 70, 1,3);
                                 SpawnNature(_pine, 40, 4,5);
                                 SpawnNature(_rock, 30, 4,5);
+                                SpawnNature(_enemy, 5, 1,4);
                             }
                 }
             }
