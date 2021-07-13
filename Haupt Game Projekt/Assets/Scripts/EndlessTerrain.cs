@@ -458,6 +458,8 @@ public class EndlessTerrain : MonoBehaviour
         IEnumerator WaitForNavmesh()
         {
             yield return new WaitForSeconds(2f);
+            Transform player = GameObject.FindWithTag("Player").transform;
+            Debug.Log(player);
             SpawnNature(_enemy, 5, 1,4);
         }
 

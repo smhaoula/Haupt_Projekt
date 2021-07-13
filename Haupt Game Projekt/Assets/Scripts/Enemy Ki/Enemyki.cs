@@ -84,6 +84,7 @@ public class Enemyki : MonoBehaviour
         healthBar.SetMaxHealth(Health);
         isDefeated = false;
         Triangulation = NavMesh.CalculateTriangulation();
+        Player = GameObject.FindWithTag("Player").transform;
         Spawn();
     }
 
@@ -227,6 +228,7 @@ public class Enemyki : MonoBehaviour
                 {
                     Agent.isStopped = false;
                     anim.SetBool("isattacking", false);
+                    Player = GameObject.FindWithTag("Player").transform;
                     Agent.SetDestination(Player.transform.position);
 
                 }

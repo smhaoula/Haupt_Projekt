@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 [Serializable]
 public class QuestOBJ
 {
@@ -13,7 +14,6 @@ public class QuestOBJ
 public class NPCQuestManager : MonoBehaviour
 {
     
-    public DialogueBoxManager manager;
     public GameObject triggerText;
     public GameObject DialogueBox;
     public GameObject questGameObject;
@@ -35,7 +35,8 @@ public class NPCQuestManager : MonoBehaviour
 
     void Start()
     {
-        manager = DialogueBox.GetComponent<DialogueBoxManager>();
+        triggerText = GameObject.Find("triggerText").GetComponent<GameObject>();
+        DialogueBox = GameObject.Find("DialogueBox").GetComponent<GameObject>();
         questPhase = 0;
         currentQuest = startDialogue;
     }
