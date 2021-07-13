@@ -108,6 +108,7 @@ public class EndlessTerrain : MonoBehaviour
   
 
     public class TerrainChunk{
+        CoroutineHandler cHandler; 
         public List<GameObject> spawnedObjects;
         GameObject _village;
         GameObject _nature;
@@ -139,6 +140,7 @@ public class EndlessTerrain : MonoBehaviour
 
         public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom, GameObject enemy){
             spawnedObjects = new List<GameObject>();
+            cHandler = FindObjectOfType<CoroutineHandler>();
             _village = village;
             _nature = nature;
             _tree = tree;
@@ -303,6 +305,41 @@ public class EndlessTerrain : MonoBehaviour
             }
         }
 
+         public void SpawnNavMeshAgent(GameObject prefab, int count, int minHeight, int maxHeight){
+            float minSpawnHeight = textureData.layers[minHeight].startHeight * mapGenerator.noiseData.noiseScale;
+            float maxSpawnHeight = textureData.layers[maxHeight].startHeight * mapGenerator.noiseData.noiseScale;
+            int spawnCount = count;
+            int layerMask = LayerMask.GetMask("Terrain");
+
+            for(int i = 0; i < spawnCount; i++){
+                float posX = Random.Range(startOfChunkPosition.x, startOfChunkPosition.x + terrainSize);
+                float posZ = Random.Range(startOfChunkPosition.y, startOfChunkPosition.y + terrainSize);
+               
+                RaycastHit hit = new RaycastHit();
+                var p = new Vector3(posX, 100, posZ);
+                Ray ray = new Ray(p, Vector3.down*200);
+                if(Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)){
+                    float posY = hit.point.y;
+                    if(posY >= minSpawnHeight && posY <= maxSpawnHeight){
+                        Vector3 spawnPos = new Vector3(posX, posY, posZ);
+                        NavMeshHit closestHit;
+                        if(NavMesh.SamplePosition(spawnPos, out closestHit, 500, 1)){
+                            spawnPos = closestHit.position;
+                            GameObject t = Instantiate(prefab, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
+                            t.AddComponent<NavMeshAgent>();
+                            t.GetComponent<NavMeshAgent>().enabled = true;
+                            spawnedObjects.Add(t);
+                            t.transform.parent = _nature.transform;
+                        }
+                        else{
+                            Debug.Log("NavMesh Hit nicht funktioniert");
+                        }
+                        
+                    }
+                }
+            }
+        }
+
         public bool SpawnVillage(){
             float minVillageHeight = textureData.layers[2].startHeight * mapGenerator.noiseData.noiseScale;
             float maxVillageHeight = textureData.layers[3].startHeight * mapGenerator.noiseData.noiseScale;
@@ -413,10 +450,15 @@ public class EndlessTerrain : MonoBehaviour
                                 SpawnNature(_grass, 70, 1,3);
                                 SpawnNature(_pine, 40, 4,5);
                                 SpawnNature(_rock, 30, 4,5);
-                                SpawnNature(_enemy, 5, 1,4);
+                                cHandler.StartChildCoroutine(WaitForNavmesh());
                             }
                 }
             }
+        }
+        IEnumerator WaitForNavmesh()
+        {
+            yield return new WaitForSeconds(2f);
+            SpawnNature(_enemy, 5, 1,4);
         }
 
         public void SetVisible(bool visible){
