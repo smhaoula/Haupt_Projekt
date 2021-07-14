@@ -88,7 +88,7 @@ public class Enemyki : MonoBehaviour
         Spawn();
     }
 
-    public void TakeDamage(){
+    public void TakeDamage(int damage){
         if (!isDefeated)
         {
             if (currentHealth <= 0)
@@ -103,7 +103,7 @@ public class Enemyki : MonoBehaviour
                 anim.SetBool("gethit", true);
                 StartCoroutine(HitAnimation());
 
-                currentHealth = currentHealth - 10;
+                currentHealth = currentHealth - damage;
                 healthBar.SetHealth(currentHealth);
                 if (currentHealth <= currentHealth / 2) {
                     HandleHealthSight();
@@ -176,7 +176,9 @@ public class Enemyki : MonoBehaviour
 
     private void Update()
     {
+        Player = GameObject.FindWithTag("Player").transform;
         Animator.SetBool(iswalking, Agent.velocity.magnitude > 0.01f);
+        
         /* Agent.updatePosition = true;
          Agent.SetDestination(Player.transform.position);
          Animator.SetBool("iswalking", true);*/

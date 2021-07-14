@@ -438,6 +438,7 @@ GameObject:
   - component: {fileID: 257935741}
   - component: {fileID: 257935742}
   - component: {fileID: 257935743}
+  - component: {fileID: 257935744}
   m_Layer: 0
   m_Name: ' Map Generator'
   m_TagString: Untagged
@@ -581,6 +582,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc3def90d74bc3b4b98f4a9cc5d44d5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &257935744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257935736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59cd93f949ce02b45ae7e60ba12971e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  QuestTemplate:
+  - questGameObject: {fileID: 8783704408407814820, guid: f5a30d9a93bd5914e98dcf58cabd4ae6, type: 3}
+    QuestObjectPicture: {fileID: 21300000, guid: e4bbdfe9a6d099e409876283df924cd0, type: 3}
+    questTitle: Finde das Zauberbuch
+    NPCName: Generic Fantasy Name
+    startDialogue:
+      Dialogues:
+      - Hallo furchtloser Held!
+      - Ich habe leider mein Zauberbuch verloren.
+      - "Kannst du es f\xFCr mich finden?"
+      CharacterName: 
+      npc: {fileID: 0}
+    middleDialogue:
+      Dialogues:
+      - Schade das du mein Zauberbuch noch nicht gefunden hast.
+      CharacterName: 
+      npc: {fileID: 0}
+    endDialogue:
+      Dialogues:
+      - Ja das ist es! Du hast es gefunden!
+      - "Vielen Dank f\xFCr deine Hilfe."
+      - Nimm das als Dank.
+      CharacterName: 
+      npc: {fileID: 0}
+    thanksDialogue:
+      Dialogues:
+      - "Vielen Dank f\xFCr deine Hilfe!"
+      CharacterName: 
+      npc: {fileID: 0}
 --- !u!4 &271888258 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400012, guid: 7e30eee73c241d5448ce0ac372cf6602, type: 3}
@@ -1325,7 +1367,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5261597426008505389, guid: 6d81312fab1367e46a10281588f79e72, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5620868370527816531, guid: 6d81312fab1367e46a10281588f79e72, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d81312fab1367e46a10281588f79e72, type: 3}
@@ -1687,9 +1733,10 @@ GameObject:
   - component: {fileID: 647277383}
   - component: {fileID: 647277382}
   - component: {fileID: 647277381}
+  - component: {fileID: 647277385}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1781,6 +1828,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &647277385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647277380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7205048e32c57cb4e8a64b21f93bab46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerText: {fileID: 1157592676}
+  DialogueBox: {fileID: 1277813714}
+  QuestTitleParent: {fileID: 703988362}
+  QuestTitle: {fileID: 2082875970}
+  QuestImage: {fileID: 308934153}
+  QuestImageObject: {fileID: 460475682}
+  boxManager: {fileID: 0}
 --- !u!4 &647696898 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400010, guid: 7e30eee73c241d5448ce0ac372cf6602, type: 3}
@@ -3163,8 +3229,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885794102}
-  m_LocalRotation: {x: -0.0032623871, y: 0.9905956, z: -0.13466206, w: -0.023998639}
-  m_LocalPosition: {x: -32.415756, y: 5.16, z: 60.48827}
+  m_LocalRotation: {x: 0.11852511, y: 0.4708119, z: -0.06400241, w: 0.8718897}
+  m_LocalPosition: {x: -41.261642, y: 5.16, z: 45.0152}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 559582072}
@@ -3704,11 +3770,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7278786656446623095, guid: ecdd7bf447dbe76429f729e0fd3db3d6, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7278786656446623095, guid: ecdd7bf447dbe76429f729e0fd3db3d6, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9167228411792265614, guid: ecdd7bf447dbe76429f729e0fd3db3d6, type: 3}
       propertyPath: m_Layer
@@ -4219,7 +4285,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1232145956}
-  m_LocalRotation: {x: -0, y: -0.9997067, z: -0, w: 0.024219392}
+  m_LocalRotation: {x: -0, y: 0.47514218, z: -0, w: 0.87990904}
   m_LocalPosition: {x: -32.9, y: 2.39, z: 50.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4227,7 +4293,7 @@ Transform:
   - {fileID: 1941516840}
   m_Father: {fileID: 0}
   m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: -177.224, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 56.737, z: 0}
 --- !u!114 &1232145958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4250,7 +4316,9 @@ MonoBehaviour:
   healthBar: {fileID: 1930244132}
   timeThreshold: 2.5
   QuestObject: {fileID: 0}
-  pickedUpObject: {fileID: 0}
+  QuestImage: {fileID: 0}
+  pickedUpQuestObject: 0
+  textManager: {fileID: 0}
 --- !u!54 &1232145959
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4527,10 +4595,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 2058678652}
   DialogueText: {fileID: 919231882}
-  QuestTitleParent: {fileID: 703988362}
-  QuestTitle: {fileID: 2082875970}
-  QuestImage: {fileID: 308934153}
-  QuestImageObject: {fileID: 460475682}
 --- !u!1 &1283771202
 GameObject:
   m_ObjectHideFlags: 0
@@ -4905,7 +4969,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6446a6cc5b220d3488294c6dcd05e762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 1232145957}
+  Player: {fileID: 0}
   LineOfSightChecker: {fileID: 1663323449}
   fireChecker: {fileID: 1765556043}
   Animator: {fileID: 1444408355}
@@ -5707,7 +5771,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1438169871030806, guid: c9bc790a133e19c40b64d6db4cfb7a22, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1438169871030806, guid: c9bc790a133e19c40b64d6db4cfb7a22, type: 3}
       propertyPath: m_TagString
@@ -6981,8 +7045,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1277813718}
-        m_TargetAssemblyTypeName: DialogueObject, Assembly-CSharp
+      - m_Target: {fileID: 1277813719}
+        m_TargetAssemblyTypeName: DialogueBoxManager, Assembly-CSharp
         m_MethodName: next
         m_Mode: 1
         m_Arguments:
@@ -7312,8 +7376,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127956284}
-  m_LocalRotation: {x: -0.0032623871, y: 0.9905956, z: -0.13466206, w: -0.023998639}
-  m_LocalPosition: {x: -32.415756, y: 5.16, z: 60.48827}
+  m_LocalRotation: {x: 0.11852511, y: 0.4708119, z: -0.06400241, w: 0.8718897}
+  m_LocalPosition: {x: -41.261642, y: 5.16, z: 45.0152}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

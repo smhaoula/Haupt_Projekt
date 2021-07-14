@@ -26,12 +26,17 @@ public class PlayerMovement : MonoBehaviour , IDamageable
     public float timeThreshold = 2f;
 
     public GameObject QuestObject;
-    public GameObject pickedUpObject;
+    public Sprite QuestImage;
+    public bool pickedUpQuestObject;
+    int playerDamage;
+    public TriggerTextManager textManager;
 
     void Awake() => _animator = GetComponent<Animator>();
 
     void Start()
     {
+        textManager = FindObjectOfType<TriggerTextManager>();
+        playerDamage = 10;
         gameObject.tag = "Player";
         currentHealth=Health;
         healthBar.SetMaxHealth(Health);
@@ -73,7 +78,7 @@ public class PlayerMovement : MonoBehaviour , IDamageable
 
                 if(hitCollider.gameObject.tag.Equals("EnemyCollider")){
                     GameObject parentObject = hitCollider.transform.parent.gameObject;
-                    parentObject.GetComponent<Enemyki>().TakeDamage();
+                    parentObject.GetComponent<Enemyki>().TakeDamage(playerDamage);
                 }
             }
         }
@@ -99,17 +104,32 @@ public class PlayerMovement : MonoBehaviour , IDamageable
          _animator.SetBool("Roll", roll);
     }
 
-    public void StartQuest(GameObject quest)
+    public void StartQuest(GameObject quest, Sprite image)
     {
         QuestObject = quest;
+        QuestImage = image;
     }
+
+    public void FinishQuest()
+    {
+        QuestObject = null;
+        QuestImage = null;
+        pickedUpQuestObject = false;
+    }
+
 
     void OnTriggerEnter(Collider other)
     {
-        //if(other.gameObject.tag.Equals(QuestObject.tag))
-        //{
-            
-        //}
+        if(QuestObject!=null)
+        {
+            if(other.gameObject.tag.Equals(QuestObject.tag))
+            {
+                pickedUpQuestObject = true;
+                textManager.SetQuestImage(QuestImage);
+
+            }
+        }
+        
     }
 
     void OnCollisionEnter(Collision collision) {

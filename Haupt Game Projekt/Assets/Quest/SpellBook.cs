@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class SpellBook : MonoBehaviour
 {
- void Update()
+ /*void Update()
     {
         transform.Rotate(0, 50*Time.deltaTime, 0);
-    }
+    }*/
 
     void OnTriggerEnter(Collider other)
     {

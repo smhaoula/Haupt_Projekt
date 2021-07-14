@@ -15,17 +15,17 @@ public class DialogueBoxManager : MonoBehaviour
 
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI DialogueText;
-    public GameObject QuestTitleParent;
-    public TextMeshProUGUI QuestTitle;
-    public GameObject QuestImage;
-    public Image QuestImageObject;
+    //public GameObject QuestTitleParent;
+    //public TextMeshProUGUI QuestTitle;
+    //public GameObject QuestImage;
+    //public Image QuestImageObject;
 
     public void DisableBox()
     {
         gameObject.SetActive(false);
     }
 
-    public void SetQuestImage(Sprite questImage)
+    /*public void SetQuestImage(Sprite questImage)
     {
         QuestImage.SetActive(true);
         QuestImageObject.sprite = questImage;
@@ -42,7 +42,7 @@ public class DialogueBoxManager : MonoBehaviour
     {
         QuestImage.SetActive(false);
         QuestTitleParent.SetActive(false);
-    }
+    }*/
 
     public void playDialogue(QuestOBJ dialogueOBJ)
     {

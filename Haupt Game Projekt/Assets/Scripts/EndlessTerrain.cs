@@ -458,16 +458,21 @@ public class EndlessTerrain : MonoBehaviour
         IEnumerator WaitForNavmesh()
         {
             yield return new WaitForSeconds(2f);
-            Transform player = GameObject.FindWithTag("Player").transform;
-            Debug.Log(player);
+            //Transform player = GameObject.FindWithTag("Player").transform;
+            //Debug.Log(player);
             SpawnNature(_enemy, 5, 1,4);
+            //SpawnNavMeshAgent(_enemy, 5, 1, 4);
         }
 
         public void SetVisible(bool visible){
             meshObject.SetActive(visible);
             foreach (GameObject item in spawnedObjects)
             {
-                item.SetActive(visible);
+                if(item != null)
+                {
+                    item.SetActive(visible);
+                }
+                
             }
         }
 

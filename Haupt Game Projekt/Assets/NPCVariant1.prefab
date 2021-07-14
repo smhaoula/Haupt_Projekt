@@ -1740,10 +1740,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75d2dc1f81d4f28448bee1e754943b76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manager: {fileID: 0}
-  triggerText: {fileID: 0}
-  DialogueBox: {fileID: 0}
-  questGameObject: {fileID: 0}
+  textManager: {fileID: 0}
+  questGameObject: {fileID: 8783704408407814820, guid: f5a30d9a93bd5914e98dcf58cabd4ae6, type: 3}
   QuestObjectPicture: {fileID: 21300000, guid: e4bbdfe9a6d099e409876283df924cd0, type: 3}
   questTitle: 
   hasTalked: 0
@@ -1771,6 +1769,7 @@ MonoBehaviour:
     npc: {fileID: 0}
   questPhase: 0
   finished: 0
+  Charactername: 
 --- !u!1 &5261597426018321292
 GameObject:
   m_ObjectHideFlags: 0

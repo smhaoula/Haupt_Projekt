@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using Quest;
 [Serializable]
 public class QuestOBJ
 {
@@ -13,9 +14,7 @@ public class QuestOBJ
 
 public class NPCQuestManager : MonoBehaviour
 {
-    
-    public GameObject triggerText;
-    public GameObject DialogueBox;
+    public TriggerTextManager textManager;
     public GameObject questGameObject;
     public Sprite QuestObjectPicture;
     public string questTitle;
@@ -30,13 +29,48 @@ public class NPCQuestManager : MonoBehaviour
     [Range(0,3)]
     public int questPhase;
     public bool finished;
+    Canvas canvas;
+    
 
     
 
     void Start()
     {
-        triggerText = GameObject.Find("triggerText").GetComponent<GameObject>();
-        DialogueBox = GameObject.Find("DialogueBox").GetComponent<GameObject>();
+        QuestInfo questInfo = FindObjectOfType<StoryManager>().GetRandomQuest();
+
+
+        //textManager = GameObject.FindWithTag("UI").GetComponent<TriggerTextManager>();
+        //NPCName = "Generic NPC Name";
+        NPCName = questInfo.NPCName;
+        questGameObject = questInfo.questGameObject;
+        QuestObjectPicture = questInfo.QuestObjectPicture;
+        //questTitle = "Finde das Zauberbuch";
+        questTitle=questInfo.questTitle;
+        //startDialogue=new QuestOBJ();
+        startDialogue = questInfo.startDialogue;
+        startDialogue.CharacterName = NPCName;
+        //startDialogue.Dialogues = new string[] {"Hallo furchtloser Held!", "Ich habe leider mein Zauberbuch verloren.", "Kannst du es für mich finden?"};
+        startDialogue.npc = gameObject;
+
+        //middleDialogue=new QuestOBJ();
+        middleDialogue = questInfo.middleDialogue;
+        middleDialogue.CharacterName = NPCName;
+        //middleDialogue.Dialogues = new string[] {"Schade das du mein Zauberbuch noch nicht gefunden hast."};
+        middleDialogue.npc = gameObject;
+
+        //endDialogue=new QuestOBJ();
+        endDialogue = questInfo.endDialogue;
+        endDialogue.CharacterName = NPCName;
+        //endDialogue.Dialogues = new string[] {"Ja das ist es! Du hast es gefunden!", "Vielen Dank für deine Hilfe.", "Nimm das als Dank."};
+        endDialogue.npc = gameObject;
+
+        //thanksDialogue=new QuestOBJ();
+        thanksDialogue = questInfo.thanksDialogue;
+        thanksDialogue.CharacterName = NPCName;
+        //thanksDialogue.Dialogues = new string[] {"Vielen Dank für deine Hilfe!"};
+        thanksDialogue.npc = gameObject;
+
+        textManager = FindObjectOfType<TriggerTextManager>();
         questPhase = 0;
         currentQuest = startDialogue;
     }
@@ -45,39 +79,45 @@ public class NPCQuestManager : MonoBehaviour
      
         if (other.gameObject.tag == "Player" && !isInDialogue)
         {
-            /*if(other.gameObject.hasBook)
+            if(other.gameObject.GetComponent<PlayerMovement>().pickedUpQuestObject)
                 {
                     questPhase = 2;
-                }*/
-            triggerText.SetActive(true);
+                }
+            //triggerText.SetActive(true);
+            textManager.SetTriggerText(true);
             if (Input.GetKeyDown(KeyCode.E)) {
                 isInDialogue = true;
-                DialogueBox.SetActive(true);
-                triggerText.SetActive(false);
+                //DialogueBox.SetActive(true);
+                textManager.SetDialogueBox(true);
+                //triggerText.SetActive(false);
+                textManager.SetTriggerText(true);
                 
 
                 switch(questPhase)
                 {
                     case 0:
                         currentQuest = startDialogue;
-                        DialogueBox.GetComponent<DialogueBoxManager>().playDialogue(currentQuest);
-                        DialogueBox.GetComponent<DialogueBoxManager>().SetQuestTitle(questTitle);
-                        DialogueBox.GetComponent<DialogueBoxManager>().SetQuestImage(QuestObjectPicture);
+                        textManager.PlayDialogue(currentQuest);
+                        textManager.SetQuestTitle(questTitle);
+                        SpawnQuestObject();
+                        //textManager.SetQuestImage(QuestObjectPicture);
+                        other.gameObject.GetComponent<PlayerMovement>().StartQuest(questGameObject, QuestObjectPicture);
                         break;
                     case 1:
                         currentQuest = middleDialogue;
-                        DialogueBox.GetComponent<DialogueBoxManager>().playDialogue(currentQuest);
+                        textManager.PlayDialogue(currentQuest);                        
                         break;
                     case 2:
                         currentQuest = endDialogue;
-                        DialogueBox.GetComponent<DialogueBoxManager>().playDialogue(currentQuest);
+                        textManager.PlayDialogue(currentQuest);
                         finished = true;
-                        DialogueBox.GetComponent<DialogueBoxManager>().SetFinishedQuest();
+                        other.gameObject.GetComponent<PlayerMovement>().FinishQuest();
+                        textManager.FinishQuest();
                         ScoreScript.scoreValue += 20;
                         break;
                     case 3: 
                         currentQuest = thanksDialogue;
-                        DialogueBox.GetComponent<DialogueBoxManager>().playDialogue(currentQuest);
+                        textManager.PlayDialogue(currentQuest);
                         break;
                 }
 
@@ -102,6 +142,19 @@ public class NPCQuestManager : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        triggerText.SetActive(false);
+        //triggerText.SetActive(false);
+        textManager.SetTriggerText(false);
+    }
+
+    public void SpawnQuestObject()
+    {
+        Vector3 spawnPos = (UnityEngine.Random.insideUnitSphere * 5 + transform.position);
+        RaycastHit hit = new RaycastHit();
+        var p = new Vector3(spawnPos.x, 100, spawnPos.z);
+        Ray ray = new Ray(p, Vector3.down*200);
+        if(Physics.Raycast(ray, out hit, Mathf.Infinity)){
+            spawnPos.y = hit.point.y + 2f;
+            GameObject questObject = Instantiate(questGameObject, spawnPos, Quaternion.Euler(0,0,0));
+        }
     }
 }

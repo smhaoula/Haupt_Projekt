@@ -11,6 +11,7 @@ TagManager:
   - EnemyCollider
   - Fire
   - SpellBook
+  - UI
   layers:
   - Default
   - TransparentFX
