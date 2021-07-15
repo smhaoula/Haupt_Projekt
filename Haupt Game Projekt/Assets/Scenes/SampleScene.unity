@@ -515,6 +515,9 @@ MonoBehaviour:
   pine: {fileID: 199518, guid: 17de3c1426f928b4e97bb2feeeb4d11e, type: 3}
   mushroom: {fileID: 180336, guid: a2d90428d4402a64ca9aa7ae580033f8, type: 3}
   enemy: {fileID: 1996924438221834739, guid: 5b0228c2fef6cfa4b9f484ac6b0f2f42, type: 3}
+  crystal: {fileID: 27010510587028915, guid: a0b2417ea7935e14680a88ef77e3fc32, type: 3}
+  npc:
+  - {fileID: 5261597426008505389, guid: 6d81312fab1367e46a10281588f79e72, type: 3}
   detailLevels:
   - lod: 0
     visibleDstThreshold: 25

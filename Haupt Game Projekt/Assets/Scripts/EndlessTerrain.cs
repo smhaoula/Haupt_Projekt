@@ -15,6 +15,8 @@ public class EndlessTerrain : MonoBehaviour
     public GameObject pine;
     public GameObject mushroom;
     public GameObject enemy;
+    public GameObject crystal;
+    public GameObject[] npc;
     const float viewerMoveThresholdForChunkUpdate = 25f;
     const float squareViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
     public static float maxViewDst;
@@ -73,7 +75,7 @@ public class EndlessTerrain : MonoBehaviour
                     terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
                 }
                 else{
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, tree, grass, nature, village, pine, rock, mushroom, enemy));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, tree, grass, nature, village, pine, rock, mushroom, enemy, crystal, npc));
                     
                 }
             }
@@ -117,6 +119,8 @@ public class EndlessTerrain : MonoBehaviour
         GameObject _rock;
         GameObject _enemy;
         GameObject _mushroom;
+        GameObject _crystal;
+        GameObject[] _npc;
         public bool generatedNature;
         public bool generatedNavmesh;
         GameObject _tree;
@@ -138,7 +142,7 @@ public class EndlessTerrain : MonoBehaviour
         int previousLODIndex = -1;
         int terrainSize;
 
-        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom, GameObject enemy){
+        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom, GameObject enemy, GameObject crystal, GameObject[] npc){
             spawnedObjects = new List<GameObject>();
             cHandler = FindObjectOfType<CoroutineHandler>();
             _village = village;
@@ -149,6 +153,8 @@ public class EndlessTerrain : MonoBehaviour
             _rock = rock;
             _enemy = enemy;
             _mushroom = mushroom;
+            _crystal = crystal;
+            _npc = npc;
             generatedNature = false;
             generatedNavmesh = false;
             this.detailLevels = detailLevels;
@@ -340,6 +346,14 @@ public class EndlessTerrain : MonoBehaviour
             }
         }
 
+        public void SpawnNPC()
+        {
+            int length = _npc.Length-1;
+            int select = Random.Range(0,length);
+            GameObject selNpc = _npc[select];
+            SpawnNature(selNpc, 2, 2, 4);
+        }
+
         public bool SpawnVillage(){
             float minVillageHeight = textureData.layers[2].startHeight * mapGenerator.noiseData.noiseScale;
             float maxVillageHeight = textureData.layers[3].startHeight * mapGenerator.noiseData.noiseScale;
@@ -450,6 +464,7 @@ public class EndlessTerrain : MonoBehaviour
                                 SpawnNature(_grass, 70, 1,3);
                                 SpawnNature(_pine, 40, 4,5);
                                 SpawnNature(_rock, 30, 4,5);
+                                SpawnNature(_crystal, 10, 1, 4);
                                 cHandler.StartChildCoroutine(WaitForNavmesh());
                             }
                 }

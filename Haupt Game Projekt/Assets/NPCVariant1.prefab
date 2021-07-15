@@ -1741,8 +1741,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textManager: {fileID: 0}
-  questGameObject: {fileID: 8783704408407814820, guid: f5a30d9a93bd5914e98dcf58cabd4ae6, type: 3}
-  QuestObjectPicture: {fileID: 21300000, guid: e4bbdfe9a6d099e409876283df924cd0, type: 3}
+  questGameObject: {fileID: 0}
+  QuestObjectPicture: {fileID: 0}
   questTitle: 
   hasTalked: 0
   isInDialogue: 0
@@ -1769,7 +1769,6 @@ MonoBehaviour:
     npc: {fileID: 0}
   questPhase: 0
   finished: 0
-  Charactername: 
 --- !u!1 &5261597426018321292
 GameObject:
   m_ObjectHideFlags: 0

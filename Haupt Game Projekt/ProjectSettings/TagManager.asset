@@ -13,6 +13,7 @@ TagManager:
   - SpellBook
   - UI
   - Potion
+  - Healing
   layers:
   - Default
   - TransparentFX

@@ -134,7 +134,23 @@ public class PlayerMovement : MonoBehaviour , IDamageable
 
             }
         }
+        if(other.tag == "Healing")
+        {
+            Heal();
+        }
         
+    }
+    public void Heal()
+    {
+        if(currentHealth< Health-20)
+        {
+            currentHealth = currentHealth + 20;
+        }
+        else
+        {
+            currentHealth = Health;
+        }
+        healthBar.SetHealth(currentHealth);
     }
 
     void OnCollisionEnter(Collision collision) {
