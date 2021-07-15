@@ -12,6 +12,7 @@ TagManager:
   - Fire
   - SpellBook
   - UI
+  - Potion
   layers:
   - Default
   - TransparentFX

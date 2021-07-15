@@ -104,6 +104,11 @@ public class PlayerMovement : MonoBehaviour , IDamageable
          _animator.SetBool("Roll", roll);
     }
 
+    public void IncreasePlayerDamage()
+    {
+        playerDamage += 5;
+    }
+
     public void StartQuest(GameObject quest, Sprite image)
     {
         QuestObject = quest;

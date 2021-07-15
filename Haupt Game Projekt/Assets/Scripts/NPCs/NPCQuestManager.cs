@@ -114,6 +114,7 @@ public class NPCQuestManager : MonoBehaviour
                         other.gameObject.GetComponent<PlayerMovement>().FinishQuest();
                         textManager.FinishQuest();
                         ScoreScript.scoreValue += 20;
+                        ScoreScript.currentScore +=20;
                         break;
                     case 3: 
                         currentQuest = thanksDialogue;

@@ -10,7 +10,9 @@ namespace Quest
 
     public QuestInfo GetRandomQuest()
     {
+        Debug.Log(QuestTemplate.Length);
         int length = QuestTemplate.Length-1;
+        
         int select = Random.Range(0,length);
         return QuestTemplate[select];
 
