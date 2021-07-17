@@ -465,14 +465,14 @@ public class EndlessTerrain : MonoBehaviour
                                 SpawnNature(_pine, 40, 4,5);
                                 SpawnNature(_rock, 30, 4,5);
                                 SpawnNature(_crystal, 10, 1, 4);
-                                cHandler.StartChildCoroutine(WaitForNavmesh());
+                               cHandler.StartChildCoroutine(WaitForNavmesh());
                             }
                 }
             }
         }
         IEnumerator WaitForNavmesh()
         {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(3f);
             //Transform player = GameObject.FindWithTag("Player").transform;
             //Debug.Log(player);
             SpawnNature(_enemy, 5, 1,4);
