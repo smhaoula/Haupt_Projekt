@@ -511,7 +511,7 @@ MonoBehaviour:
   nature: {fileID: 1660887632}
   tree: {fileID: 1148613061152340, guid: eded051879df4c147b9010199d240258, type: 3}
   grass: {fileID: 6047091299831746666, guid: 44241fcd6a73eb141b48ba54ff9aa0da, type: 3}
-  rock: {fileID: 1000010869019282, guid: d7ba4fe833670a140b9b6085652f0e26, type: 3}
+  rock: {fileID: 1000011696945378, guid: f94554303b4f7094ea5e12fe79985529, type: 3}
   pine: {fileID: 199518, guid: 17de3c1426f928b4e97bb2feeeb4d11e, type: 3}
   mushroom: {fileID: 180336, guid: a2d90428d4402a64ca9aa7ae580033f8, type: 3}
   enemy: {fileID: 1996924438221834739, guid: 5b0228c2fef6cfa4b9f484ac6b0f2f42, type: 3}
@@ -602,6 +602,7 @@ MonoBehaviour:
     QuestObjectPicture: {fileID: 21300000, guid: e4bbdfe9a6d099e409876283df924cd0, type: 3}
     questTitle: Finde das Zauberbuch
     NPCName: Generic Fantasy Name
+    questTag: spellbook
     startDialogue:
       Dialogues:
       - Hallo furchtloser Held!
@@ -630,6 +631,7 @@ MonoBehaviour:
     QuestObjectPicture: {fileID: 21300000, guid: 8ee36d89cd448bf418f3539f1ca904e5, type: 3}
     questTitle: Finde den Zaubertrank
     NPCName: Generic Fantasy Name
+    questTag: potion
     startDialogue:
       Dialogues:
       - Hey du da!
@@ -1295,7 +1297,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
     m_FontSize: 24
     m_FontStyle: 1
     m_BestFit: 0
@@ -3026,7 +3028,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!65 &844336356
 BoxCollider:
@@ -3332,7 +3334,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.1963048, y: 1}
+    m_SensorSize: {x: 2.062963, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -4571,6 +4573,7 @@ MonoBehaviour:
   QuestImage: {fileID: 0}
   pickedUpQuestObject: 0
   textManager: {fileID: 0}
+  talking: 0
 --- !u!54 &1232145959
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5210,6 +5213,89 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400022, guid: 7e30eee73c241d5448ce0ac372cf6602, type: 3}
   m_PrefabInstance: {fileID: 694111720}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1390690510
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1390690512}
+  - component: {fileID: 1390690511}
+  m_Layer: 0
+  m_Name: ObjectPooler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1390690511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1390690510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca44b900449429543a630072bac21250, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pools:
+  - tag: tree
+    prefab: {fileID: 1148613061152340, guid: eded051879df4c147b9010199d240258, type: 3}
+    size: 500
+  - tag: enemy
+    prefab: {fileID: 1996924438221834739, guid: 5b0228c2fef6cfa4b9f484ac6b0f2f42, type: 3}
+    size: 100
+  - tag: grass
+    prefab: {fileID: 2357035498818626401, guid: 6f589983173561a40bedce5934b85843, type: 3}
+    size: 500
+  - tag: pine
+    prefab: {fileID: 199518, guid: 17de3c1426f928b4e97bb2feeeb4d11e, type: 3}
+    size: 200
+  - tag: rock
+    prefab: {fileID: 1000011696945378, guid: f94554303b4f7094ea5e12fe79985529, type: 3}
+    size: 50
+  - tag: mushroom
+    prefab: {fileID: 180336, guid: a2d90428d4402a64ca9aa7ae580033f8, type: 3}
+    size: 100
+  - tag: village
+    prefab: {fileID: 1848520088182154941, guid: a1215e9e3ebec924e80412317f588e25, type: 3}
+    size: 20
+  - tag: church
+    prefab: {fileID: 114982, guid: b626a2c19b493bc47b8551a65bce8ace, type: 3}
+    size: 20
+  - tag: crystal
+    prefab: {fileID: 27010510587028915, guid: a0b2417ea7935e14680a88ef77e3fc32, type: 3}
+    size: 100
+  - tag: npc1
+    prefab: {fileID: 5261597426008505389, guid: 6d81312fab1367e46a10281588f79e72, type: 3}
+    size: 10
+  - tag: npc2
+    prefab: {fileID: 5794956463673475613, guid: f5cdcdef62baa33488bd90d001434f07, type: 3}
+    size: 10
+  - tag: spellbook
+    prefab: {fileID: 8783704408407814820, guid: f5a30d9a93bd5914e98dcf58cabd4ae6, type: 3}
+    size: 10
+  - tag: potion
+    prefab: {fileID: 7019058843876442180, guid: 5027e368a8aa9ca4f964a4cd952aa0d6, type: 3}
+    size: 10
+--- !u!4 &1390690512
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1390690510}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.136326, y: 8.489365, z: 7.743889}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 21
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1425335510 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400080, guid: 7e30eee73c241d5448ce0ac372cf6602, type: 3}

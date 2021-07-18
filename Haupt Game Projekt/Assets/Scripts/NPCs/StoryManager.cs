@@ -14,7 +14,7 @@ namespace Quest
         int length = QuestTemplate.Length-1;
         
         int select = Random.Range(0,length);
-        return QuestTemplate[select];
+        return QuestTemplate[Random.Range(0, QuestTemplate.Length)];
 
     }
 }
@@ -25,6 +25,7 @@ namespace Quest
         public Sprite QuestObjectPicture;
         public string questTitle;
         public string NPCName;
+        public string questTag;
         public QuestOBJ startDialogue;
         public QuestOBJ middleDialogue;
         public QuestOBJ endDialogue;

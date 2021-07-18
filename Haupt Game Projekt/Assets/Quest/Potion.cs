@@ -8,8 +8,9 @@ public class Potion : MonoBehaviour
     {
         if(other.gameObject.tag == "Player")
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);        
         }
+
         
     }   
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Gists;
 
 public class EndlessTerrain : MonoBehaviour
 {
@@ -110,6 +111,7 @@ public class EndlessTerrain : MonoBehaviour
   
 
     public class TerrainChunk{
+        ObjectPooler objectPooler;
         CoroutineHandler cHandler; 
         public List<GameObject> spawnedObjects;
         GameObject _village;
@@ -143,6 +145,7 @@ public class EndlessTerrain : MonoBehaviour
         int terrainSize;
 
         public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom, GameObject enemy, GameObject crystal, GameObject[] npc){
+            objectPooler = ObjectPooler.Instance;
             spawnedObjects = new List<GameObject>();
             cHandler = FindObjectOfType<CoroutineHandler>();
             _village = village;
@@ -216,10 +219,10 @@ public class EndlessTerrain : MonoBehaviour
                     if(posY >= minTreeHeight && posY <= maxTreeHeight){
                         Vector3 spawnPos = new Vector3(posX, posY, posZ);
 
-                         Collider[] hitColliders = Physics.OverlapSphere(spawnPos, 10f);
+                        Collider[] hitColliders = Physics.OverlapSphere(spawnPos, 10f);
                         foreach (var hitCollider in hitColliders)
                         {
-                            if(hitCollider.gameObject.tag=="Architecture"){
+                            if(hitCollider.gameObject.CompareTag("Architecture")){
                                 Debug.Log("Village zu nah");
                                 break;
                             }
@@ -383,6 +386,90 @@ public class EndlessTerrain : MonoBehaviour
             }
             return true;
         }
+
+        public void SpawnRandom(string tag, int count, int minHeight, int maxHeight){
+            float minSpawnHeight = textureData.layers[minHeight].startHeight * mapGenerator.noiseData.noiseScale;
+            float maxSpawnHeight = textureData.layers[maxHeight].startHeight * mapGenerator.noiseData.noiseScale;
+            int spawnCount = count;
+            int layerMask = LayerMask.GetMask("Terrain");
+
+            for(int i = 0; i < spawnCount; i++){
+                float posX = Random.Range(startOfChunkPosition.x, startOfChunkPosition.x + terrainSize);
+                float posZ = Random.Range(startOfChunkPosition.y, startOfChunkPosition.y + terrainSize);
+               
+                RaycastHit hit = new RaycastHit();
+                var p = new Vector3(posX, 100, posZ);
+                Ray ray = new Ray(p, Vector3.down*200);
+                if(Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)){
+                    float posY = hit.point.y;
+                    if(posY >= minSpawnHeight && posY <= maxSpawnHeight){
+                        Vector3 spawnPos = new Vector3(posX, posY, posZ);
+                        Collider[] hitColliders = Physics.OverlapSphere(spawnPos, 10f);
+                        foreach (var hitCollider in hitColliders)
+                        {
+                            if(hitCollider.gameObject.CompareTag("Architecture") || hitCollider.gameObject.CompareTag("Fire")){
+                                Debug.Log("Village zu nah");
+                                break;
+                            }
+                            else{
+                                //GameObject t = Instantiate(prefab, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
+                                GameObject t = objectPooler.SpawnFromPool(tag, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
+                                spawnedObjects.Add(t);
+                                t.transform.parent = _nature.transform;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        public void SpawnPoisson(string tag, int count, int minHeight, int maxHeight, int radius){
+            float minSpawnHeight = textureData.layers[minHeight].startHeight * mapGenerator.noiseData.noiseScale;
+            float maxSpawnHeight = textureData.layers[maxHeight].startHeight * mapGenerator.noiseData.noiseScale;
+            int spawnCount = count;
+            int layerMask = LayerMask.GetMask("Terrain");
+
+            Vector2 bottomLeft = startOfChunkPosition;
+            Vector2 topRight = new Vector2(startOfChunkPosition.x+terrainSize, startOfChunkPosition.y +terrainSize);
+
+            List<Vector2> points = FastPoissonDiskSampling.Sampling(bottomLeft,topRight, radius);
+            //Debug.Log(position);
+            //Debug.Log(bounds.extents);
+            //Debug.Log(points.Count);
+
+            for(int i = 0; i < points.Count; i++){
+
+               
+                RaycastHit hit = new RaycastHit();
+                float posX = points[i].x;
+                float posZ = points[i].y;
+                var p = new Vector3(posX, 100, posZ);
+                Ray ray = new Ray(p, Vector3.down*200);
+                if(Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)){
+                    float posY = hit.point.y;
+                    if(posY >= minSpawnHeight && posY <= maxSpawnHeight){
+
+                        
+                        Vector3 spawnPos = new Vector3(posX, posY, posZ);
+                        Collider[] hitColliders = Physics.OverlapSphere(spawnPos, 10f);
+                        foreach (var hitCollider in hitColliders)
+                        {
+                            if(hitCollider.gameObject.CompareTag("Architecture") || hitCollider.gameObject.CompareTag("Fire")){
+                                Debug.Log("Village zu nah");
+                                break;
+                            }
+                            else{
+                                //GameObject t = Instantiate(prefab, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
+                                GameObject t = objectPooler.SpawnFromPool(tag, spawnPos, Quaternion.Euler(0,Random.Range(0,360),0));
+                                spawnedObjects.Add(t);
+                                t.transform.parent = _nature.transform;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
 
         void OnMapDataReceived(MapData mapData){
@@ -411,15 +498,6 @@ public class EndlessTerrain : MonoBehaviour
                             previousLODIndex = lodIndex;
                             meshFilter.mesh = lODMesh.mesh;
 
-                            /*if(spawnedObjects.Count == 0){
-                                if(SpawnVillage()){
-                                    generatedNature = true;
-                                }
-                                SpawnTrees();
-                                SpawnGrass();
-                                SpawnNature(_pine, 20, 4,5);
-                                SpawnNature(_rock, 10, 4,5);
-                            }*/
                             
                         }
                         else if(!lODMesh.hasRequestedMesh){
@@ -431,18 +509,6 @@ public class EndlessTerrain : MonoBehaviour
                         if(collisionLODMesh.hasMesh){
                             meshCollider.sharedMesh = collisionLODMesh.mesh;
                             
-                            //Debug.Log(startOfChunkPosition);
-                            //Debug.Log(spawnedObjects.Count);
-
-                            /*if(spawnedObjects.Count == 0){
-                                if(SpawnVillage()){
-                                    generatedNature = true;
-                                }
-                                SpawnTrees();
-                                SpawnGrass();
-                                SpawnNature(_pine, 20, 4,5);
-                                SpawnNature(_rock, 10, 4,5);
-                            }*/
                         
                         
                         }
@@ -459,13 +525,24 @@ public class EndlessTerrain : MonoBehaviour
                     if(spawnedObjects.Count == 0){
                                 //SpawnVillage();
                                 //SpawnTrees();
-                                SpawnNature(_village, 3, 2,3);
-                                SpawnNature(_tree, 40, 1, 4);
-                                SpawnNature(_grass, 70, 1,3);
-                                SpawnNature(_pine, 40, 4,5);
-                                SpawnNature(_rock, 30, 4,5);
-                                SpawnNature(_crystal, 10, 1, 4);
+                                //SpawnNature(_village, 3, 2,3);
+                                //SpawnNature(_tree, 40, 1, 4);
+                                //SpawnNature(_grass, 70, 1,3);
+                                //SpawnNature(_pine, 40, 4,5);
+                                //SpawnNature(_rock, 30, 4,5);
+                                //SpawnNature(_crystal, 10, 1, 4);
+                               
+                               Debug.Log(spawnedObjects.Count);
+                               SpawnRandom("village", 3, 2, 3);
+                               SpawnRandom("church", 1, 2, 3);
+                               SpawnPoisson("tree", 30, 1, 4, 20);
                                cHandler.StartChildCoroutine(WaitForNavmesh());
+                               SpawnPoisson("pine", 30, 4, 5, 20);
+                               SpawnPoisson("rock", 30, 4, 5, 15);
+                               SpawnPoisson("grass", 30, 1,3,10);
+                               SpawnRandom("crystal", 10, 1, 4);
+                               
+
                             }
                 }
             }
@@ -476,6 +553,7 @@ public class EndlessTerrain : MonoBehaviour
             //Transform player = GameObject.FindWithTag("Player").transform;
             //Debug.Log(player);
             SpawnNature(_enemy, 5, 1,4);
+            //SpawnRandom("enemy", 5, 1, 4);
             //SpawnNavMeshAgent(_enemy, 5, 1, 4);
         }
 

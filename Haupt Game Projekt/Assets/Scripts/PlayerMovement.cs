@@ -30,6 +30,7 @@ public class PlayerMovement : MonoBehaviour , IDamageable
     public bool pickedUpQuestObject;
     int playerDamage;
     public TriggerTextManager textManager;
+    public bool talking;
 
     void Awake() => _animator = GetComponent<Animator>();
 
@@ -40,6 +41,7 @@ public class PlayerMovement : MonoBehaviour , IDamageable
         gameObject.tag = "Player";
         currentHealth=Health;
         healthBar.SetMaxHealth(Health);
+        talking = false;
     }
 
     void Update(){
@@ -68,19 +70,23 @@ public class PlayerMovement : MonoBehaviour , IDamageable
 
 
         if(Input.GetMouseButtonDown(0)){
-            fight = true;
-             _animator.SetBool("Fight", fight);
-            StartCoroutine(FightAnimation());
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
-            foreach (Collider hitCollider in hitColliders)
+            if(!talking)
             {
-                //Debug.Log(hitCollider.tag);
+                fight = true;
+                _animator.SetBool("Fight", fight);
+                StartCoroutine(FightAnimation());
+                Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
+                foreach (Collider hitCollider in hitColliders)
+                {
+                    //Debug.Log(hitCollider.tag);
 
-                if(hitCollider.gameObject.tag.Equals("EnemyCollider")){
-                    GameObject parentObject = hitCollider.transform.parent.gameObject;
-                    parentObject.GetComponent<Enemyki>().TakeDamage(playerDamage);
+                    if(hitCollider.gameObject.tag.Equals("EnemyCollider")){
+                        GameObject parentObject = hitCollider.transform.parent.gameObject;
+                        parentObject.GetComponent<Enemyki>().TakeDamage(playerDamage);
+                    }
                 }
             }
+            
         }
 
         if(Input.GetMouseButtonDown(1)){
@@ -134,7 +140,7 @@ public class PlayerMovement : MonoBehaviour , IDamageable
 
             }
         }
-        if(other.tag == "Healing")
+        if(other.CompareTag("Healing"))
         {
             Heal();
         }
@@ -154,7 +160,7 @@ public class PlayerMovement : MonoBehaviour , IDamageable
     }
 
     void OnCollisionEnter(Collision collision) {
-         if (collision.gameObject.tag == "EnemyCollider") {
+         if (collision.gameObject.CompareTag("EnemyCollider")) {
              _timeColliding = 0f;
              TakeDamage(10);
          }

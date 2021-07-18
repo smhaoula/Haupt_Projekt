@@ -14,11 +14,13 @@ public class QuestOBJ
 
 public class NPCQuestManager : MonoBehaviour
 {
+    ObjectPooler objectPooler;
+    
     public TriggerTextManager textManager;
     public GameObject questGameObject;
+    public string questTag;
     public Sprite QuestObjectPicture;
     public string questTitle;
-    public bool hasTalked = false;
     public bool isInDialogue = false;
     public string NPCName;
     public QuestOBJ startDialogue;
@@ -29,7 +31,7 @@ public class NPCQuestManager : MonoBehaviour
     [Range(0,3)]
     public int questPhase;
     public bool finished;
-    Canvas canvas;
+    public PlayerMovement player;
     
 
     
@@ -37,11 +39,12 @@ public class NPCQuestManager : MonoBehaviour
     void Start()
     {
         QuestInfo questInfo = FindObjectOfType<StoryManager>().GetRandomQuest();
-
+        objectPooler = ObjectPooler.Instance;
 
         //textManager = GameObject.FindWithTag("UI").GetComponent<TriggerTextManager>();
         //NPCName = "Generic NPC Name";
         NPCName = questInfo.NPCName;
+        questTag = questInfo.questTag;
         questGameObject = questInfo.questGameObject;
         QuestObjectPicture = questInfo.QuestObjectPicture;
         //questTitle = "Finde das Zauberbuch";
@@ -73,12 +76,14 @@ public class NPCQuestManager : MonoBehaviour
         textManager = FindObjectOfType<TriggerTextManager>();
         questPhase = 0;
         currentQuest = startDialogue;
+        finished = false;
     }
     private void OnTriggerStay(Collider other)
     {
      
-        if (other.gameObject.tag == "Player" && !isInDialogue)
+        if (other.gameObject.CompareTag("Player") && !isInDialogue)
         {
+            other.GetComponent<PlayerMovement>().talking = true;
             if(other.gameObject.GetComponent<PlayerMovement>().pickedUpQuestObject)
                 {
                     questPhase = 2;
@@ -145,6 +150,9 @@ public class NPCQuestManager : MonoBehaviour
     {
         //triggerText.SetActive(false);
         textManager.SetTriggerText(false);
+        //other.GetComponent<PlayerMovement>().talking = false;
+        player = FindObjectOfType<PlayerMovement>();
+        player.talking = false;
     }
 
     public void SpawnQuestObject()
@@ -155,7 +163,7 @@ public class NPCQuestManager : MonoBehaviour
         Ray ray = new Ray(p, Vector3.down*200);
         if(Physics.Raycast(ray, out hit, Mathf.Infinity)){
             spawnPos.y = hit.point.y + 2f;
-            GameObject questObject = Instantiate(questGameObject, spawnPos, Quaternion.Euler(0,0,0));
-        }
+            GameObject questObject = objectPooler.SpawnFromPool(questTag, spawnPos, Quaternion.Euler(0,0,0));
     }
+}
 }
