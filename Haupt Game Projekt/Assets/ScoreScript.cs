@@ -10,6 +10,7 @@ public class ScoreScript : MonoBehaviour
     public int levelLimit;
     public static int currentScore;
     public ScoreBar scoreBar;
+    public HealthBar healthBar;
     Text score;
     // Start is called before the first frame update
     void Start()
@@ -44,5 +45,7 @@ public class ScoreScript : MonoBehaviour
     public void LevelUp(){
         player = FindObjectOfType<PlayerMovement>();
         player.IncreasePlayerDamage();
+        int MaxHealth = player.Health;
+        healthBar.SetHealth(MaxHealth);
     }
 }

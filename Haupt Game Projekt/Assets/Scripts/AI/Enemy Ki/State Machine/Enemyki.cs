@@ -179,6 +179,12 @@ public class Enemyki : MonoBehaviour
 
     private void Update()
     {
+        /*Agent = GetComponent<NavMeshAgent>();
+        target = GameObject.FindGameObjectWithTag("Player").transform;
+        Player = GameObject.FindWithTag("Player").transform;
+        Agent.SetDestination(Player.transform.position);
+        */
+        //gameObject.GetComponent<NavMeshAgent>().Warp(transform.position);
         Animator.SetBool(iswalking, Agent.velocity.magnitude > 0.01f);
         
         /* Agent.updatePosition = true;

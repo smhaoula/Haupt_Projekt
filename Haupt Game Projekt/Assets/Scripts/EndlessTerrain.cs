@@ -57,6 +57,20 @@ public class EndlessTerrain : MonoBehaviour
             viewerPositionOld = viewerPosition;
             UpdateVisibleChunks();
         }
+        foreach (KeyValuePair<Vector2, TerrainChunk> item in terrainChunkDictionary)
+        {
+            GameObject meshObj = item.Value.meshObject;
+            if(meshObj.GetComponent<MeshCollider>().sharedMesh != null && meshObj.GetComponent<NavMeshSurface>().navMeshData == null && item.Value.previousLODIndex == 0)
+            {
+                Debug.Log("Bake NavMesh");
+                BuildNavMeshAsync(meshObj.GetComponent<NavMeshSurface>());
+                StartCoroutine(WaitForNavMeshSurface(item.Value));
+            }
+        }
+    }
+    public IEnumerator WaitForNavMeshSurface(TerrainChunk chunk){
+        yield return new WaitForSeconds(2f);
+        chunk.navMeshComplete = true;
     }
     void UpdateVisibleChunks(){
 
@@ -82,7 +96,9 @@ public class EndlessTerrain : MonoBehaviour
             }
 
         }
-        Surfaces = mapgenarator.GetComponentsInChildren<NavMeshSurface>();
+
+
+        /*Surfaces = mapgenarator.GetComponentsInChildren<NavMeshSurface>();
        
         for (int i = 0; i < Surfaces.Length; i++)
         {
@@ -90,7 +106,10 @@ public class EndlessTerrain : MonoBehaviour
             {
                 BuildNavMeshAsync(Surfaces[i]);
             }         
-        }
+        }*/
+
+
+        
     }
     public static AsyncOperation BuildNavMeshAsync(NavMeshSurface surface)
     {
@@ -111,6 +130,8 @@ public class EndlessTerrain : MonoBehaviour
   
 
     public class TerrainChunk{
+        public bool navMeshComplete;
+        public bool spawnedEnemies;
         ObjectPooler objectPooler;
         CoroutineHandler cHandler; 
         public List<GameObject> spawnedObjects;
@@ -127,7 +148,7 @@ public class EndlessTerrain : MonoBehaviour
         public bool generatedNavmesh;
         GameObject _tree;
         TextureData textureData = mapGenerator.textureData;
-        GameObject meshObject;
+        public GameObject meshObject;
         public Vector2 position;
         public Vector2 startOfChunkPosition;
         public Bounds bounds;
@@ -141,7 +162,7 @@ public class EndlessTerrain : MonoBehaviour
         LODMesh[] lODMeshes;
         LODMesh collisionLODMesh;
         bool mapDataReceived;
-        int previousLODIndex = -1;
+        public int previousLODIndex = -1;
         int terrainSize;
 
         public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom, GameObject enemy, GameObject crystal, GameObject[] npc){
@@ -521,29 +542,33 @@ public class EndlessTerrain : MonoBehaviour
                     terrainChunksVisibleLastUpdate.Add(this);
                 }
                 SetVisible(visible);
-                if(meshCollider.sharedMesh != null && this.spawnedObjects.Count ==0){
-                    if(spawnedObjects.Count == 0){
-                                //SpawnVillage();
-                                //SpawnTrees();
-                                //SpawnNature(_village, 3, 2,3);
-                                //SpawnNature(_tree, 40, 1, 4);
-                                //SpawnNature(_grass, 70, 1,3);
-                                //SpawnNature(_pine, 40, 4,5);
-                                //SpawnNature(_rock, 30, 4,5);
-                                //SpawnNature(_crystal, 10, 1, 4);
+                if(meshCollider.sharedMesh != null && this.spawnedObjects.Count ==0)
+                {
+                    //SpawnVillage();
+                    //SpawnTrees();
+                    //SpawnNature(_village, 3, 2,3);
+                    //SpawnNature(_tree, 40, 1, 4);
+                    //SpawnNature(_grass, 70, 1,3);
+                    //SpawnNature(_pine, 40, 4,5);
+                    //SpawnNature(_rock, 30, 4,5);
+                    //SpawnNature(_crystal, 10, 1, 4);
                                
-                               Debug.Log(spawnedObjects.Count);
-                               SpawnRandom("village", 3, 2, 3);
-                               SpawnRandom("church", 1, 2, 3);
-                               SpawnPoisson("tree", 30, 1, 4, 20);
-                               cHandler.StartChildCoroutine(WaitForNavmesh());
-                               SpawnPoisson("pine", 30, 4, 5, 20);
-                               SpawnPoisson("rock", 30, 4, 5, 15);
-                               SpawnPoisson("grass", 30, 1,3,10);
-                               SpawnRandom("crystal", 10, 1, 4);
-                               
-
-                            }
+                    Debug.Log(spawnedObjects.Count);
+                    SpawnRandom("village", 3, 2, 3);
+                    SpawnRandom("church", 1, 2, 3);
+                    SpawnPoisson("tree", 30, 1, 4, 20);
+                    
+                    SpawnPoisson("pine", 30, 4, 5, 20);
+                    SpawnPoisson("rock", 30, 4, 5, 15);
+                    SpawnPoisson("grass", 30, 1,3,10);
+                    SpawnRandom("crystal", 10, 1, 4);
+                    SpawnRandom("npc1", 5, 1, 4);
+                                
+                }
+                if(meshCollider.sharedMesh!=null && !spawnedEnemies && navMeshComplete)
+                {
+                    cHandler.StartChildCoroutine(WaitForNavmesh());
+                    spawnedEnemies=true;
                 }
             }
         }
