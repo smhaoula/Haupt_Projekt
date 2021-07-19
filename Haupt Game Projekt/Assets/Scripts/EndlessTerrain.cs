@@ -128,7 +128,7 @@ public class EndlessTerrain : MonoBehaviour
     }
 
   
-
+    
     public class TerrainChunk{
         public bool navMeshComplete;
         public bool spawnedEnemies;
@@ -164,6 +164,7 @@ public class EndlessTerrain : MonoBehaviour
         bool mapDataReceived;
         public int previousLODIndex = -1;
         int terrainSize;
+        public bool spawnedNature;
 
         public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom, GameObject enemy, GameObject crystal, GameObject[] npc){
             objectPooler = ObjectPooler.Instance;
@@ -188,8 +189,10 @@ public class EndlessTerrain : MonoBehaviour
             bounds = new Bounds(position,Vector2.one * size);
             Vector3 positionV3 = new Vector3(position.x, 0, position.y);
 
-            startOfChunkPosition.x = bounds.center.x - size/2;
-            startOfChunkPosition.y = bounds.center.z - size/2;
+            //startOfChunkPosition.x = bounds.center.x - size/2;
+            //startOfChunkPosition.y = bounds.center.z - size/2;
+            startOfChunkPosition.x = position.x - size/2;
+            startOfChunkPosition.y = position.y - size/2;
             startOfChunkPosition = startOfChunkPosition* mapGenerator.terrainData.uniformScale;
             
             Debug.DrawRay(new Vector3(startOfChunkPosition.x, 100, startOfChunkPosition.y), Vector3.down*200, Color.red, 20f);
@@ -542,7 +545,7 @@ public class EndlessTerrain : MonoBehaviour
                     terrainChunksVisibleLastUpdate.Add(this);
                 }
                 SetVisible(visible);
-                if(meshCollider.sharedMesh != null && this.spawnedObjects.Count ==0)
+                if(meshCollider.sharedMesh != null && this.spawnedObjects.Count ==0 && !spawnedNature)
                 {
                     //SpawnVillage();
                     //SpawnTrees();
@@ -553,7 +556,7 @@ public class EndlessTerrain : MonoBehaviour
                     //SpawnNature(_rock, 30, 4,5);
                     //SpawnNature(_crystal, 10, 1, 4);
                                
-                    Debug.Log(spawnedObjects.Count);
+                    Debug.Log("Spawning " + position);
                     SpawnRandom("village", 3, 2, 3);
                     SpawnRandom("church", 1, 2, 3);
                     SpawnPoisson("tree", 30, 1, 4, 20);
@@ -562,7 +565,8 @@ public class EndlessTerrain : MonoBehaviour
                     SpawnPoisson("rock", 30, 4, 5, 15);
                     SpawnPoisson("grass", 30, 1,3,10);
                     SpawnRandom("crystal", 10, 1, 4);
-                    SpawnRandom("npc1", 5, 1, 4);
+                    SpawnRandom("npc1", 10, 1, 4);
+                    spawnedNature = true;
                                 
                 }
                 if(meshCollider.sharedMesh!=null && !spawnedEnemies && navMeshComplete)
@@ -574,10 +578,10 @@ public class EndlessTerrain : MonoBehaviour
         }
         IEnumerator WaitForNavmesh()
         {
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(2f);
             //Transform player = GameObject.FindWithTag("Player").transform;
             //Debug.Log(player);
-            SpawnNature(_enemy, 5, 1,4);
+            SpawnNature(_enemy, 15, 1,4);
             //SpawnRandom("enemy", 5, 1, 4);
             //SpawnNavMeshAgent(_enemy, 5, 1, 4);
         }
