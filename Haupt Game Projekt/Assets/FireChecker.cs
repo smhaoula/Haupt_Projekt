@@ -21,7 +21,8 @@ public class FireChecker : MonoBehaviour
 
     private void Awake()
     {
-        fireCollider = GetComponent<SphereCollider>();  
+        fireCollider = GetComponent<SphereCollider>();
+        onCoverChange?.Invoke(false);
     }
 
     private void OnTriggerEnter(Collider other)

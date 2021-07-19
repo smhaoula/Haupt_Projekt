@@ -530,7 +530,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 90
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -569,8 +569,8 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   WaypointIndex: 0
   IdleLocationRadius: 4
-  IdleMovespeedMultiplier: 0.5
-  DefaultState: 3
+  IdleMovespeedMultiplier: 1
+  DefaultState: 1
 --- !u!114 &5081398883398115404
 MonoBehaviour:
   m_ObjectHideFlags: 0

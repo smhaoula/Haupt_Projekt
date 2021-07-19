@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -15,7 +16,7 @@ public class EnemyLineOfSightChecker : MonoBehaviour
     public SignEvent OnLoseSight;
 
     private Coroutine CheckForLineOfSightCoroutine;
-   
+    private const String Player = "Player";
     public FireChecker fireChecker;
     private bool isactive;
 
@@ -26,21 +27,23 @@ public class EnemyLineOfSightChecker : MonoBehaviour
         Collider = GetComponent<SphereCollider>();
     }
 
-   
-    void setbool(bool var) {
+
+    void setbool(bool var)
+    {
         isactive = !var;
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
-        if (isactive)
+       if (isactive)
         {
-            PlayerMovement player;
-            if (other.TryGetComponent<PlayerMovement>(out player))
+
+            if (other.gameObject.CompareTag(Player))
             {
-                if (!CheckLineOfSight(player))
+            Debug.Log("qqqqq");
+                if (!CheckLineOfSight(other.transform))
                 {
-                    CheckForLineOfSightCoroutine = StartCoroutine(CheckForLineOfSight(player));
+                    CheckForLineOfSightCoroutine = StartCoroutine(CheckForLineOfSight(other.transform));
                 }
             }
         }
@@ -50,8 +53,8 @@ public class EnemyLineOfSightChecker : MonoBehaviour
     {
         if (isactive)
         {
-            PlayerMovement player;
-            if (other.TryGetComponent<PlayerMovement>(out player))
+
+            if (other.gameObject.CompareTag(Player))
             {
                 OnLoseSight?.Invoke();
                 if (CheckForLineOfSightCoroutine != null)
@@ -62,32 +65,22 @@ public class EnemyLineOfSightChecker : MonoBehaviour
         }
     }
 
-    private bool CheckLineOfSight(PlayerMovement player)
+    private bool CheckLineOfSight(Transform player)
     {
-        Vector3 Direction = (player.transform.position - transform.position).normalized;
-        float DotProduct = Vector3.Dot(transform.forward, Direction);
-        if (DotProduct >= Mathf.Cos(FieldOfView))
-        {
-            RaycastHit Hit;
-
-            if (Physics.Raycast(transform.position, Direction, out Hit, Collider.radius, LineOfSightLayers))
-            {
-                if (Hit.transform.GetComponent<PlayerMovement>() != null)
-                {
+      
                     onGainSight?.Invoke();
+                    Debug.Log("isdone");
                     return true;
-                }
-            }
-        }
+      
 
-        return false;
+      
     }
 
-    private IEnumerator CheckForLineOfSight(PlayerMovement player)
+    private IEnumerator CheckForLineOfSight(Transform Player)
     {
         WaitForSeconds Wait = new WaitForSeconds(0.1f);
 
-        while (!CheckLineOfSight(player))
+        while (!CheckLineOfSight(Player))
         {
             yield return Wait;
         }

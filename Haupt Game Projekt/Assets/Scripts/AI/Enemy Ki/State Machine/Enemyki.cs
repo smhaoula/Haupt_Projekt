@@ -36,7 +36,7 @@ public class Enemyki : MonoBehaviour
 
     private Coroutine FollowCoroutine;
     public float IdleLocationRadius = 4f;
-    public float IdleMovespeedMultiplier = 0.5f;
+    public float IdleMovespeedMultiplier = 2f;
 
     public EnemyState DefaultState;
     private EnemyState _state;
@@ -186,7 +186,8 @@ public class Enemyki : MonoBehaviour
         */
         //gameObject.GetComponent<NavMeshAgent>().Warp(transform.position);
         Animator.SetBool(iswalking, Agent.velocity.magnitude > 0.01f);
-        
+    
+
         /* Agent.updatePosition = true;
          Agent.SetDestination(Player.transform.position);
          Animator.SetBool("iswalking", true);*/
