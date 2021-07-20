@@ -32,6 +32,7 @@ public class NPCQuestManager : MonoBehaviour
     public int questPhase;
     public bool finished;
     public PlayerMovement player;
+    public bool changeDialogue;
     
 
     
@@ -41,41 +42,30 @@ public class NPCQuestManager : MonoBehaviour
         QuestInfo questInfo = FindObjectOfType<StoryManager>().GetRandomQuest();
         objectPooler = ObjectPooler.Instance;
 
-        //textManager = GameObject.FindWithTag("UI").GetComponent<TriggerTextManager>();
-        //NPCName = "Generic NPC Name";
         NPCName = questInfo.NPCName;
         questTag = questInfo.questTag;
         questGameObject = questInfo.questGameObject;
         QuestObjectPicture = questInfo.QuestObjectPicture;
-        //questTitle = "Finde das Zauberbuch";
         questTitle=questInfo.questTitle;
-        //startDialogue=new QuestOBJ();
+        
         startDialogue = questInfo.startDialogue;
         startDialogue.CharacterName = NPCName;
-        //startDialogue.Dialogues = new string[] {"Hallo furchtloser Held!", "Ich habe leider mein Zauberbuch verloren.", "Kannst du es für mich finden?"};
-        startDialogue.npc = gameObject;
+        startDialogue.npc = this.gameObject;
 
-        //middleDialogue=new QuestOBJ();
         middleDialogue = questInfo.middleDialogue;
         middleDialogue.CharacterName = NPCName;
-        //middleDialogue.Dialogues = new string[] {"Schade das du mein Zauberbuch noch nicht gefunden hast."};
         middleDialogue.npc = gameObject;
 
-        //endDialogue=new QuestOBJ();
         endDialogue = questInfo.endDialogue;
         endDialogue.CharacterName = NPCName;
-        //endDialogue.Dialogues = new string[] {"Ja das ist es! Du hast es gefunden!", "Vielen Dank für deine Hilfe.", "Nimm das als Dank."};
         endDialogue.npc = gameObject;
 
-        //thanksDialogue=new QuestOBJ();
         thanksDialogue = questInfo.thanksDialogue;
         thanksDialogue.CharacterName = NPCName;
-        //thanksDialogue.Dialogues = new string[] {"Vielen Dank für deine Hilfe!"};
         thanksDialogue.npc = gameObject;
 
         textManager = FindObjectOfType<TriggerTextManager>();
         questPhase = 0;
-        currentQuest = startDialogue;
         finished = false;
     }
     private void OnTriggerStay(Collider other)
@@ -88,13 +78,11 @@ public class NPCQuestManager : MonoBehaviour
                 {
                     questPhase = 2;
                 }
-            //triggerText.SetActive(true);
             textManager.SetTriggerText(true);
             if (Input.GetKeyDown(KeyCode.E)) {
                 isInDialogue = true;
-                //DialogueBox.SetActive(true);
+                
                 textManager.SetDialogueBox(true);
-                //triggerText.SetActive(false);
                 textManager.SetTriggerText(true);
                 
 
@@ -105,7 +93,6 @@ public class NPCQuestManager : MonoBehaviour
                         textManager.PlayDialogue(currentQuest);
                         textManager.SetQuestTitle(questTitle);
                         SpawnQuestObject();
-                        //textManager.SetQuestImage(QuestObjectPicture);
                         other.gameObject.GetComponent<PlayerMovement>().StartQuest(questGameObject, QuestObjectPicture);
                         break;
                     case 1:
@@ -128,7 +115,7 @@ public class NPCQuestManager : MonoBehaviour
                 }
 
                 
-                
+                changeDialogue = true;
             }
         }
     }
@@ -144,15 +131,21 @@ public class NPCQuestManager : MonoBehaviour
         {
             questPhase = 3;
         }
+        Debug.Log("ChangeQuest aufgerufen");
     }
 
     private void OnTriggerExit(Collider other)
     {
-        //triggerText.SetActive(false);
         textManager.SetTriggerText(false);
-        //other.GetComponent<PlayerMovement>().talking = false;
         player = FindObjectOfType<PlayerMovement>();
         player.talking = false;
+        if(changeDialogue)
+        {
+            isInDialogue = false;
+            ChangeQuestPhase();
+            changeDialogue = false;
+        }
+        
     }
 
     public void SpawnQuestObject()
@@ -161,8 +154,9 @@ public class NPCQuestManager : MonoBehaviour
         RaycastHit hit = new RaycastHit();
         var p = new Vector3(spawnPos.x, 100, spawnPos.z);
         Ray ray = new Ray(p, Vector3.down*200);
+        int layer_mask = LayerMask.GetMask("Terrain");
         if(Physics.Raycast(ray, out hit, Mathf.Infinity)){
-            spawnPos.y = hit.point.y + 2f;
+            spawnPos.y = hit.point.y + 1.5f;
             GameObject questObject = objectPooler.SpawnFromPool(questTag, spawnPos, Quaternion.Euler(0,0,0));
     }
 }

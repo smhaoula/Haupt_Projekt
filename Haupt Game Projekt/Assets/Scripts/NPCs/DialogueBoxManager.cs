@@ -15,34 +15,12 @@ public class DialogueBoxManager : MonoBehaviour
 
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI DialogueText;
-    //public GameObject QuestTitleParent;
-    //public TextMeshProUGUI QuestTitle;
-    //public GameObject QuestImage;
-    //public Image QuestImageObject;
 
     public void DisableBox()
     {
         gameObject.SetActive(false);
     }
 
-    /*public void SetQuestImage(Sprite questImage)
-    {
-        QuestImage.SetActive(true);
-        QuestImageObject.sprite = questImage;
-        
-    }
-
-    public void SetQuestTitle(string questTitle)
-    {
-        QuestTitleParent.SetActive(true);
-        QuestTitle.text = questTitle;
-    }
-
-    public void SetFinishedQuest()
-    {
-        QuestImage.SetActive(false);
-        QuestTitleParent.SetActive(false);
-    }*/
 
     public void playDialogue(QuestOBJ dialogueOBJ)
     {
@@ -56,7 +34,13 @@ public class DialogueBoxManager : MonoBehaviour
         {
             currentDialogueNum = 0;
             currDialogue.npc.GetComponent<NPCQuestManager>().isInDialogue= false;
+            
+            //Debug.Log(currDialogue.npc.GetComponent<NPCQuestManager>().isInDialogue);
+            //Debug.Log(currDialogue.npc.GetComponent<NPCQuestManager>().questPhase);
+            
             currDialogue.npc.GetComponent<NPCQuestManager>().ChangeQuestPhase();
+            
+            //Debug.Log(currDialogue.npc.GetComponent<NPCQuestManager>().questPhase);
 
 
             currDialogue = null;

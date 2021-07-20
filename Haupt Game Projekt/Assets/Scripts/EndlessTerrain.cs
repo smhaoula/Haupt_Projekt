@@ -17,7 +17,8 @@ public class EndlessTerrain : MonoBehaviour
     public GameObject mushroom;
     public GameObject enemy;
     public GameObject crystal;
-    public GameObject[] npc;
+    public GameObject npc1;
+    public GameObject npc2;
     const float viewerMoveThresholdForChunkUpdate = 25f;
     const float squareViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
     public static float maxViewDst;
@@ -90,7 +91,7 @@ public class EndlessTerrain : MonoBehaviour
                     terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
                 }
                 else{
-                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, tree, grass, nature, village, pine, rock, mushroom, enemy, crystal, npc));
+                    terrainChunkDictionary.Add(viewedChunkCoord, new TerrainChunk(viewedChunkCoord, chunkSize, detailLevels, transform, mapMaterial, tree, grass, nature, village, pine, rock, mushroom, enemy, crystal, npc1, npc2));
                     
                 }
             }
@@ -143,7 +144,8 @@ public class EndlessTerrain : MonoBehaviour
         GameObject _enemy;
         GameObject _mushroom;
         GameObject _crystal;
-        GameObject[] _npc;
+        GameObject _npc1;
+        GameObject _npc2;
         public bool generatedNature;
         public bool generatedNavmesh;
         GameObject _tree;
@@ -166,7 +168,7 @@ public class EndlessTerrain : MonoBehaviour
         int terrainSize;
         public bool spawnedNature;
 
-        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom, GameObject enemy, GameObject crystal, GameObject[] npc){
+        public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material, GameObject tree, GameObject grass, GameObject nature, GameObject village, GameObject pine, GameObject rock, GameObject mushroom, GameObject enemy, GameObject crystal, GameObject npc1, GameObject npc2){
             objectPooler = ObjectPooler.Instance;
             spawnedObjects = new List<GameObject>();
             cHandler = FindObjectOfType<CoroutineHandler>();
@@ -179,7 +181,8 @@ public class EndlessTerrain : MonoBehaviour
             _enemy = enemy;
             _mushroom = mushroom;
             _crystal = crystal;
-            _npc = npc;
+            _npc1 = npc1;
+            _npc2 = npc2;
             generatedNature = false;
             generatedNavmesh = false;
             this.detailLevels = detailLevels;
@@ -373,13 +376,7 @@ public class EndlessTerrain : MonoBehaviour
             }
         }
 
-        public void SpawnNPC()
-        {
-            int length = _npc.Length-1;
-            int select = Random.Range(0,length);
-            GameObject selNpc = _npc[select];
-            SpawnNature(selNpc, 2, 2, 4);
-        }
+        
 
         public bool SpawnVillage(){
             float minVillageHeight = textureData.layers[2].startHeight * mapGenerator.noiseData.noiseScale;
@@ -559,13 +556,15 @@ public class EndlessTerrain : MonoBehaviour
                     Debug.Log("Spawning " + position);
                     SpawnRandom("village", 3, 2, 3);
                     SpawnRandom("church", 1, 2, 3);
-                    SpawnPoisson("tree", 30, 1, 4, 20);
+                    SpawnPoisson("tree", 30, 1, 4, 15);
                     
                     SpawnPoisson("pine", 30, 4, 5, 20);
                     SpawnPoisson("rock", 30, 4, 5, 15);
                     SpawnPoisson("grass", 30, 1,3,10);
+                    SpawnPoisson("mushroom", 30, 2,4,10);
                     SpawnRandom("crystal", 10, 1, 4);
-                    SpawnRandom("npc1", 10, 1, 4);
+                    SpawnNature(_npc1, 10, 1, 4);
+                    SpawnNature(_npc2, 10, 1, 4);
                     spawnedNature = true;
                                 
                 }
